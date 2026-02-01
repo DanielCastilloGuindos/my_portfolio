@@ -23,10 +23,10 @@
       </div>
 
       <div class="hero__scroll">
-        <span class="text-mono">SCROLL</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 4V16M10 16L14 12M10 16L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <div class="mouse-icon">
+          <div class="mouse-wheel"></div>
+        </div>
+        <span class="text-mono">SCROLL TO EXPLORE</span>
       </div>
     </div>
   </section>
@@ -147,14 +147,42 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $spacing-xs;
+    gap: $spacing-sm;
     color: $text-muted;
-    font-size: $font-size-sm;
-    animation: float 3s ease-in-out infinite;
+    font-size: $font-size-xs;
+    margin-top: $spacing-xl;
 
-    svg {
-      opacity: 0.6;
+    .mouse-icon {
+      width: 26px;
+      height: 42px;
+      border: 2px solid $text-muted;
+      border-radius: 13px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      transition: all 0.3s ease;
+
+      .mouse-wheel {
+        width: 4px;
+        height: 8px;
+        background-color: $accent-blue;
+        border-radius: 2px;
+        position: absolute;
+        top: 8px;
+        animation: mouse-scroll 1.5s ease-in-out infinite;
+        box-shadow: 0 0 8px rgba($accent-blue, 0.5);
+      }
+    }
+
+    &:hover .mouse-icon {
+      border-color: $accent-blue;
+      box-shadow: 0 0 15px rgba($accent-blue, 0.3);
     }
   }
+}
+
+@keyframes mouse-scroll {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
 }
 </style>
