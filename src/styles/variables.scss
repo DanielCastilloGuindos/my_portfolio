@@ -1,0 +1,128 @@
+// ============================================
+// DARK STORM COLOR PALETTE
+// ============================================
+
+// Backgrounds
+$bg-primary: #0a0e1a;
+$bg-secondary: #0f1419;
+$bg-tertiary: #1a1f2e;
+
+// Accents
+$accent-blue: #2563eb;
+$accent-cyan: #06b6d4;
+$accent-green: #10b981;
+$accent-purple: #8b5cf6;
+
+// Text
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+
+// Borders & Glows
+$border-primary: #1e293b;
+$glow-blue: #1e40af;
+$glow-cyan: #0891b2;
+$glow-green: #059669;
+
+// ============================================
+// SPACING
+// ============================================
+
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+$spacing-2xl: 4rem;
+$spacing-3xl: 6rem;
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+$font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
+$font-size-5xl: 3rem;
+$font-size-6xl: 3.75rem;
+$font-size-7xl: 4.5rem;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-black: 900;
+
+// ============================================
+// ANIMATION TIMINGS
+// ============================================
+
+$transition-fast: 0.15s;
+$transition-base: 0.3s;
+$transition-slow: 0.5s;
+$transition-slower: 0.8s;
+
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+// ============================================
+// EFFECTS
+// ============================================
+
+$blur-sm: 4px;
+$blur-md: 8px;
+$blur-lg: 16px;
+$blur-xl: 24px;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+// Neon glows
+$glow-blue-sm: 0 0 10px rgba($accent-blue, 0.5);
+$glow-blue-md: 0 0 20px rgba($accent-blue, 0.6);
+$glow-blue-lg: 0 0 40px rgba($accent-blue, 0.7);
+
+$glow-cyan-sm: 0 0 10px rgba($accent-cyan, 0.5);
+$glow-cyan-md: 0 0 20px rgba($accent-cyan, 0.6);
+$glow-cyan-lg: 0 0 40px rgba($accent-cyan, 0.7);
+
+$glow-green-sm: 0 0 10px rgba($accent-green, 0.5);
+$glow-green-md: 0 0 20px rgba($accent-green, 0.6);
+$glow-green-lg: 0 0 40px rgba($accent-green, 0.7);
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// ============================================
+// Z-INDEX LAYERS
+// ============================================
+
+$z-background: -1;
+$z-base: 0;
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;

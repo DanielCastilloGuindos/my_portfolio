@@ -1,0 +1,109 @@
+{
+    "hero": {
+        "name": "JONATHAN",
+        "title": "CREATIVE DEVELOPER • UI DESIGNER",
+        "badge": "Available for new projects",
+        "cta": {
+            "primary": "View Work",
+            "secondary": "Contact Me"
+        }
+    },
+    "projects": [
+        {
+            "id": "nebula",
+            "title": "PROJECT NEBULA",
+            "subtitle": "Immersive Web Experience",
+            "year": "2025",
+            "description": "A cutting-edge WebGL experience featuring real-time particle systems and advanced shader effects.",
+            "image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=400&fit=crop",
+            "tags": [
+                "WebGL",
+                "GSAP",
+                "Three.js"
+            ],
+            "links": {
+                "live": "https://example.com",
+                "github": "https://github.com",
+                "case": "https://example.com/case-study"
+            },
+            "status": "Live Project"
+        },
+        {
+            "id": "aurora",
+            "title": "PROJECT AURORA",
+            "subtitle": "E-commerce Platform",
+            "year": "2024",
+            "description": "Modern e-commerce platform with advanced filtering, real-time inventory, and seamless checkout flow.",
+            "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop",
+            "tags": [
+                "Vue 3",
+                "Node.js",
+                "Stripe"
+            ],
+            "links": {
+                "live": "https://example.com",
+                "github": "https://github.com"
+            },
+            "status": "In Development"
+        },
+        {
+            "id": "zenith",
+            "title": "PROJECT ZENITH",
+            "subtitle": "SaaS Dashboard",
+            "year": "2024",
+            "description": "Analytics dashboard with real-time data visualization and customizable widgets.",
+            "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop",
+            "tags": [
+                "React",
+                "D3.js",
+                "WebSockets"
+            ],
+            "links": {
+                "live": "https://example.com"
+            },
+            "status": "Completed"
+        }
+    ],
+    "timeline": [
+        {
+            "year": "2020",
+            "label": "MILESTONE 01",
+            "title": "Inicio Autodidacta",
+            "description": "Exploración de fundamentos web. HTML, CSS y primeros pasos en JavaScript. Construcción de proyectos personales."
+        },
+        {
+            "year": "2022",
+            "label": "MILESTONE 02",
+            "title": "Primer Rol Junior",
+            "description": "Incorporación a agencia digital. Desarrollo de landing pages y primeros componentes interactivos con React."
+        },
+        {
+            "year": "ACTUALIDAD",
+            "label": "CURRENT STATUS",
+            "title": "Senior Creative Dev",
+            "description": "Liderando experiencias inmersivas 3D, WebGL y animaciones complejas. Mentoría a desarrolladores junior.",
+            "current": true
+        }
+    ],
+    "contact": {
+        "title": "ESTABLECER CONEXIÓN",
+        "subtitle": "SECURE DATA TRANSMISSION // V.2.0.4",
+        "badge": "SYS.READY",
+        "fields": {
+            "name": {
+                "label": "01 // TU NOMBRE",
+                "placeholder": "Nombre de agente"
+            },
+            "message": {
+                "label": "02 // TU MENSAJE",
+                "placeholder": "Inicializar protocolo de comunicación...",
+                "maxChars": 500
+            }
+        },
+        "button": "ENVIAR WHATSAPP",
+        "whatsapp": {
+            "number": "1234567890",
+            "messageTemplate": "Hola! Me llamo {name}. {message}"
+        }
+    }
+}
