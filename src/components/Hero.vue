@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import gsap from 'gsap';
-import data from '../data.json';
+import data from '@/data.json';
 
 onMounted(() => {
   // Stagger animation for hero elements

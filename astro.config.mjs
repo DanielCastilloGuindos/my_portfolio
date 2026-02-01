@@ -13,10 +13,15 @@ export default defineConfig({
     })
   ],
   vite: {
+    resolve: {
+      alias: {
+        '@': '/src'
+      }
+    },
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "./src/styles/variables.scss";`
+          additionalData: `@import "@/styles/variables.scss";`
         }
       }
     }

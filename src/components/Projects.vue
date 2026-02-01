@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import gsap from 'gsap';
-import data from '../data.json';
+import data from '@/data.json';
 
 const trackRef = ref<HTMLElement | null>(null);
 const currentIndex = ref(0);

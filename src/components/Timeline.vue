@@ -59,7 +59,7 @@
 import { ref, onMounted } from 'vue';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import data from '../data.json';
+import data from '@/data.json';
 
 gsap.registerPlugin(ScrollTrigger);
 
