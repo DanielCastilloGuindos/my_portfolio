@@ -101,7 +101,7 @@
         },
         "button": "ENVIAR WHATSAPP",
         "whatsapp": {
-            "number": "1234567890",
+            "number": "+34605995969",
             "messageTemplate": "Hola! Me llamo {name}. {message}"
         }
     }
