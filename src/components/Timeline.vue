@@ -1,8 +1,8 @@
 <template>
   <section class="timeline" data-section="timeline">
     <div class="timeline__header">
+      <span class="timeline__label text-mono">TIMELINE</span>
       <h2 class="timeline__title">Career Roadmap</h2>
-      <p class="timeline__subtitle text-mono">CREATIVE DEVELOPER JOURNEY</p>
     </div>
 
     <div class="timeline__content">
@@ -111,12 +111,31 @@ onMounted(() => {
 
   &__header {
     text-align: center;
-    margin-bottom: $spacing-3xl;
+    margin-bottom: $spacing-2xl;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__label {
+    display: block;
+    color: $accent-blue;
+    font-size: $font-size-sm;
+    letter-spacing: 0.2em;
+    margin-bottom: $spacing-xs;
+    text-transform: uppercase;
   }
 
   &__title {
     font-size: $font-size-5xl;
-    margin-bottom: $spacing-sm;
+    font-weight: $font-weight-black;
+    background: linear-gradient(135deg, $text-primary 0%, $text-muted 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: $spacing-md;
+    
+    @media (max-width: $breakpoint-md) {
+      font-size: $font-size-3xl;
+    }
   }
 
   &__subtitle {
