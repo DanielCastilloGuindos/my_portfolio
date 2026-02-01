@@ -6,7 +6,7 @@
       </div>
 
       <h1 class="hero__title">
-        <span class="hero__greeting">HOLA, SOY</span>
+        <span class="hero__greeting">HELLO THERE! I'M</span>
         <span class="hero__name">{{ data.hero.name }}</span>
       </h1>
 

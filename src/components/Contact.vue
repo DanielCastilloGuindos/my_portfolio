@@ -168,6 +168,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+@use "sass:color";
 .contact {
   min-height: 100vh;
   display: flex;
@@ -176,7 +177,7 @@ onMounted(() => {
   justify-content: center;
   padding: $spacing-3xl $spacing-lg;
   position: relative;
-  background: linear-gradient(180deg, $bg-primary 0%, darken($bg-primary, 3%) 100%);
+  background: linear-gradient(180deg, $bg-primary 0%, color.adjust($bg-primary, $lightness: -3%) 100%);
 
   &__header {
     text-align: center;
