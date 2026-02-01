@@ -10,79 +10,78 @@
     },
     "projects": [
         {
-            "id": "nebula",
-            "title": "PROJECT NEBULA",
-            "subtitle": "Immersive Web Experience",
+            "id": "areadirecta",
+            "title": "Area Directa",
+            "subtitle": "Portal de venta de coches ",
             "year": "2025",
-            "description": "A cutting-edge WebGL experience featuring real-time particle systems and advanced shader effects.",
-            "image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=400&fit=crop",
+            "description": "Portal de venta de coches con sistema de tracking de usuarios y multiple personalización.",
+            "image": "",
             "tags": [
-                "WebGL",
-                "GSAP",
-                "Three.js"
+                "Vue",
+                "Supabase",
+                "Tailwind"
             ],
             "links": {
-                "live": "https://example.com",
-                "github": "https://github.com",
-                "case": "https://example.com/case-study"
+                "live": "https://areadirecta.es",
+                "github": "https://github.com/DanielCastilloGuindos/areaDirecta/"
             },
             "status": "Live Project"
         },
         {
-            "id": "aurora",
-            "title": "PROJECT AURORA",
-            "subtitle": "E-commerce Platform",
+            "id": "toldoperfil",
+            "title": "ToldoPerfil",
+            "subtitle": "Web de venta de toldos",
             "year": "2024",
-            "description": "Modern e-commerce platform with advanced filtering, real-time inventory, and seamless checkout flow.",
-            "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop",
+            "description": "Web de venta de toldos.",
+            "image": "",
             "tags": [
-                "Vue 3",
-                "Node.js",
-                "Stripe"
+                "Astro",
+                "Tripa"
             ],
             "links": {
-                "live": "https://example.com",
-                "github": "https://github.com"
+                "live": "https://toldoperfil.es",
+                "github": "https://github.com/DanielCastilloGuindos/toldoPerfil"
             },
-            "status": "In Development"
+            "status": "Live Project"
         },
         {
-            "id": "zenith",
-            "title": "PROJECT ZENITH",
-            "subtitle": "SaaS Dashboard",
-            "year": "2024",
-            "description": "Analytics dashboard with real-time data visualization and customizable widgets.",
-            "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop",
+            "id": "bancoeconos",
+            "title": "Econos",
+            "subtitle": "Portal de venta de coches ",
+            "year": "2020",
+            "description": "Proyecto realizado para Economistas Sin Fronteras para la creación de un portal que permita a los usuarios mayores simular la gestión de su cuenta bancaria fictícia.",
+            "image": "",
             "tags": [
-                "React",
-                "D3.js",
-                "WebSockets"
+                "Vue",
+                "Supabase",
+                "Tailwind"
             ],
             "links": {
-                "live": "https://example.com"
+                "live": "https://areadirecta.es",
+                "github": "https://github.com/DanielCastilloGuindos/areaDirecta/"
             },
-            "status": "Completed"
+            "status": "Live Project"
         }
     ],
     "timeline": [
         {
-            "year": "2020",
-            "label": "MILESTONE 01",
-            "title": "Inicio Autodidacta",
-            "description": "Exploración de fundamentos web. HTML, CSS y primeros pasos en JavaScript. Construcción de proyectos personales."
-        },
-        {
-            "year": "2022",
-            "label": "MILESTONE 02",
-            "title": "Primer Rol Junior",
-            "description": "Incorporación a agencia digital. Desarrollo de landing pages y primeros componentes interactivos con React."
-        },
-        {
-            "year": "ACTUALIDAD",
-            "label": "CURRENT STATUS",
-            "title": "Senior Creative Dev",
-            "description": "Liderando experiencias inmersivas 3D, WebGL y animaciones complejas. Mentoría a desarrolladores junior.",
+            "year": "2025 - Actualidad",
+            "label": "El Corte Ingles",
+            "title": "Frontend Developer",
+            "description": "Desarrollo de flujos críticos de autenticación (Login, Registro) y gestión de datos sensibles (Wallet, Direcciones) con Vue 3 (Composition API) y Node.",
             "current": true
+        },
+        {
+            "year": "2021 - 2025",
+            "label": "Neoris",
+            "title": "Software Developer",
+            "description": "Gestión integral de proyectos para cliente internacional (Polonia) bajo metodologías Agile."
+        },
+        {
+            "year": "2020 - 2021",
+            "label": "I-SEC",
+            "title": "IT Technician",
+            "description": "Responsable local de IT, actuando como enlace técnico con el equipo internacional (Holanda). Mi rol abarcó desde el desarrollo de herramientas internas hasta la administración de la infraestructura física (Redes, Hardware y sistemas de fichaje) y la gestión de plataformas de formación (LMS)."
         }
     ],
     "contact": {
@@ -92,11 +91,11 @@
         "fields": {
             "name": {
                 "label": "01 // TU NOMBRE",
-                "placeholder": "Nombre de agente"
+                "placeholder": "Nombre:"
             },
             "message": {
                 "label": "02 // TU MENSAJE",
-                "placeholder": "Inicializar protocolo de comunicación...",
+                "placeholder": "Mensaje:",
                 "maxChars": 500
             }
         },
