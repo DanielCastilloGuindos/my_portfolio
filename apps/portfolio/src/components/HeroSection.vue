@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, nextTick, ref } from 'vue';
 import type { Profile, SocialLink } from '@portfolio/core';
 import type { Theme } from '../themes/index';
 import { setupMagnetic } from '../lib/magnetic';
-import PortfolioMeDrawing from './PortfolioMeDrawing.vue';
+import PortfolioMeDrawing, { type DrawingExpression } from './PortfolioMeDrawing.vue';
 
 const props = defineProps<{
   profile: Profile;
@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const rootEl = ref<HTMLElement | null>(null);
+const activeExpression = ref<DrawingExpression>('default');
 let magneticCleanups: Array<() => void> = [];
 
 const socialLinks: SocialLink[] = (props.profile.socialLinks as SocialLink[] | undefined) ?? [];
@@ -50,7 +51,7 @@ onUnmounted(() => {
     <div class="hero-grid">
       <!-- Left: illustrated portrait from me.html -->
       <div class="monigote-col">
-        <PortfolioMeDrawing :scale="1.8" />
+        <PortfolioMeDrawing :scale="1.8" :expression="activeExpression" />
       </div>
 
       <!-- Right: name, title, bio, actions -->
@@ -69,6 +70,8 @@ onUnmounted(() => {
             target="_blank"
             rel="noopener noreferrer"
             @click="openCv"
+            @mouseenter="activeExpression = 'cv-hover'"
+            @mouseleave="activeExpression = 'default'"
             class="btn btn-cv font-mono"
             aria-label="Descargar CV de Daniel Castillo"
           >
@@ -86,6 +89,8 @@ onUnmounted(() => {
             target="_blank"
             rel="noopener noreferrer"
             @click="openWhatsApp"
+            @mouseenter="activeExpression = 'whatsapp-hover'"
+            @mouseleave="activeExpression = 'default'"
             class="btn btn-whatsapp font-mono"
             aria-label="Contactar por WhatsApp"
           >

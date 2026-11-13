@@ -3,12 +3,16 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import gsap from 'gsap';
 import { prefersReducedMotion } from '../lib/format';
 
+export type DrawingExpression = 'default' | 'cv-hover' | 'whatsapp-hover';
+
 const props = withDefaults(
   defineProps<{
     scale?: number;
+    expression?: DrawingExpression;
   }>(),
   {
     scale: 1.8,
+    expression: 'default',
   },
 );
 
@@ -39,6 +43,7 @@ onUnmounted(() => {
     <div
       ref="root"
       class="me-drawing"
+      :class="[`expr-${expression}`]"
       :style="{ transform: `scale(${scale})` }"
     >
       <div class="me-container">
@@ -142,6 +147,8 @@ onUnmounted(() => {
   border-bottom-left-radius: 9999px;
   transform: rotate(-6deg);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
 }
 
 /* Hair */
@@ -224,6 +231,8 @@ onUnmounted(() => {
   width: 1rem;
   height: 0.4rem;
   background-color: #7f1d1d;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
 }
 
 .me-brow-left {
@@ -247,6 +256,8 @@ onUnmounted(() => {
 .me-eye {
   width: 0.25rem;
   background-color: #000000;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.22s ease, border-radius 0.22s ease;
+  will-change: transform;
 }
 
 .me-eye-left {
@@ -272,5 +283,50 @@ onUnmounted(() => {
   border-top: 0;
   transform: rotate(-12deg);
   border-radius: 77% 23% 12% 88% / 92% 42% 58% 8%;
+}
+
+/* =========================================================
+   DYNAMIC FACIAL MICRO-INTERACTIONS ON HERO BUTTON HOVER
+   ========================================================= */
+
+/* 1. CV Hover Expression: Arqueo expresivo de cejas y mirada atenta */
+.expr-cv-hover .me-brow-left {
+  transform: translateY(-6px) rotate(-20deg) scaleX(1.05);
+}
+
+.expr-cv-hover .me-brow-right {
+  transform: translateY(-6px) rotate(18deg) scaleX(1.05);
+}
+
+.expr-cv-hover .me-eye {
+  transform: scale(1.3);
+}
+
+.expr-cv-hover .me-face {
+  transform: rotate(-2deg) translateY(-2px);
+}
+
+/* 2. WhatsApp Hover Expression: Guiño de ojo cómplice 😉 */
+.expr-whatsapp-hover .me-eye-right {
+  transform: translateY(2px) scaleY(0.2) scaleX(1.3);
+  height: 2px;
+  border-radius: 9999px;
+  background-color: #111827;
+}
+
+.expr-whatsapp-hover .me-eye-left {
+  transform: scale(1.15);
+}
+
+.expr-whatsapp-hover .me-brow-right {
+  transform: translateY(-7px) rotate(22deg);
+}
+
+.expr-whatsapp-hover .me-brow-left {
+  transform: translateY(-2px) rotate(-8deg);
+}
+
+.expr-whatsapp-hover .me-face {
+  transform: rotate(-8deg) translateY(-1px);
 }
 </style>
