@@ -1,0 +1,12 @@
+{
+  "name": "my-portfolio-monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --recursive run build",
+    "dev": "pnpm --recursive --parallel run dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

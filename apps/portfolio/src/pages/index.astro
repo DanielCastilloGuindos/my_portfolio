@@ -1,0 +1,9 @@
+---
+// apps/portfolio/src/pages/index.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PortfolioClient from '../components/PortfolioClient.vue';
+---
+
+<BaseLayout title="Danny Castillo — Portfolio" profileId="default">
+  <PortfolioClient client:load profile-id="default" />
+</BaseLayout>

@@ -1,0 +1,178 @@
+/* apps/portfolio/src/styles/global.css */
+/* Authentic Kanagawa color palette:
+   - SumiInk3 background (#1F1F28)
+   - SumiInk4 surface (#2A2A37)
+   - SumiInk5 border/hover (#363646)
+   - FujiWhite primary text (#DCD7BA)
+   - OldWhite secondary text (#C8C093)
+   - CarpYellow accent (#E6C384)
+   - SurimiOrange accent hover (#FFA066)
+   - CrystalBlue (#7E9CD8) / WaveAqua (#7AA89F)
+*/
+
+:root {
+  --color-bg: #1F1F28;
+  --color-surface: #2A2A37;
+  --color-surface-hover: #363646;
+  --color-text: #DCD7BA;
+  --color-text-secondary: #C8C093;
+  --color-accent: #E6C384;
+  --color-accent-hover: #FFA066;
+  --color-border: #363646;
+  --color-blue: #7E9CD8;
+  --color-aqua: #7AA89F;
+  --color-green: #76946A;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}
+
+html {
+  color-scheme: dark;
+  overscroll-behavior: contain;
+}
+
+/* Lenis smooth scrolling rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-text, 'Bricolage Grotesque', system-ui, -apple-system, sans-serif);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  /* One pair of equal outer margins */
+  padding: 0 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 24px;
+  background: var(--color-accent);
+  color: #1F1F28;
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  transition: top 0.2s ease;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus-visible {
+  top: 24px;
+}
+
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Footer inside main, below content */
+.site-footer {
+  margin-top: 240px;
+  padding: 40px 0;
+  border-top: none;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display, 'Bricolage Grotesque', system-ui, sans-serif);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+  line-height: 0.92;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  margin: 0 0 80px;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  margin: 0 0 24px;
+}
+
+/* Focus styles - visible, never outline:none */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Phone layout - its own composition */
+@media (max-width: 600px) {
+  body {
+    padding: 0 16px;
+  }
+  .container {
+    padding: 0 16px;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+    margin: 0 0 64px;
+  }
+  h3 {
+    font-size: clamp(1.125rem, 6vw, 1.5rem);
+  }
+}

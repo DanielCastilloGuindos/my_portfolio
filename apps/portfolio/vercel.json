@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "routes": [
+    { "src": "/(.*\\.js)", "headers": { "Cache-Control": "public, max-age=31536000, immutable" }, "continue": true },
+    { "src": "/(.*\\.css)", "headers": { "Cache-Control": "public, max-age=31536000, immutable" }, "continue": true },
+    { "src": "/.*", "dest": "/" }
+  ],
+  "env": {
+    "TURSO_DATABASE_URL": "@turso-database-url",
+    "TURSO_AUTH_TOKEN": "@turso-auth-token"
+  }
+}

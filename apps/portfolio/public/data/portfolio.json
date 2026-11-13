@@ -1,0 +1,368 @@
+{
+  "profile": {
+    "id": "default",
+    "name": "Daniel Castillo Guindos",
+    "title": "Full Stack Developer",
+    "bio": "Frontend Developer especializado en el ecosistema Vue 3 (Composition API), JavaScript y Node.js bajo Arquitectura Hexagonal. Experiencia en el desarrollo de flujos críticos de alta concurrencia en retail (Login, Wallet, PLP, PDP y Checkout), con foco en rendimiento web, cobertura de pruebas unitarias (Vitest) y observabilidad en producción (Kibana, Grafana, AppDynamics). Visión técnica Full Stack complementada con sólida experiencia previa en backend PHP (Laravel y CodeIgniter) y trabajo en equipos ágiles e internacionales.",
+    "email": "danielcastilloguindos@gmail.com",
+    "phone": "+34 605 995 969",
+    "whatsapp": "+34 605 995 969",
+    "location": "Madrid",
+    "avatarUrl": "",
+    "cvUrl": "",
+    "themeId": "default",
+    "headerTitle": "Daniel Castillo Guindos",
+    "headerLogoUrl": "",
+    "navLinks": [
+      { "id": "link-1", "label": "Inicio", "url": "#hero" },
+      { "id": "link-2", "label": "Sobre mí", "url": "#about" },
+      { "id": "link-3", "label": "Experiencias", "url": "#experiencias" },
+      { "id": "link-4", "label": "Estudios", "url": "#estudios" },
+      { "id": "link-5", "label": "Portfolio", "url": "#portfolio" },
+      { "id": "link-6", "label": "Contacto", "url": "#contacto" }
+    ],
+    "createdAt": "2026-11-02T12:00:00.000Z",
+    "updatedAt": "2026-11-10T22:45:00.000Z"
+  },
+  "experiences": [
+    {
+      "id": "exp-eci",
+      "profileId": "default",
+      "company": "El Corte Inglés",
+      "role": "Frontend Developer",
+      "position": "Frontend Developer",
+      "period": "Ene 2025 – Presente",
+      "startDate": "2025-01-01T00:00:00.000Z",
+      "endDate": null,
+      "current": true,
+      "description": "Liderazgo en desarrollo frontend con Vue 3 y TypeScript bajo arquitectura hexagonal para la plataforma SSO B2C.",
+      "highlights": [
+        "Desarrollo con Vue 3 (Composition API) y TypeScript bajo Arquitectura Hexagonal para la plataforma SSO B2C.",
+        "Implementación de flujos críticos de alta concurrencia: autenticación, wallet digital, checkout, historial de pedidos y tracking.",
+        "Cobertura rigurosa de pruebas unitarias con Vitest y observabilidad en producción con Kibana, Grafana y AppDynamics sobre Red Hat OpenShift."
+      ],
+      "stack": ["Vue 3", "TypeScript", "Hexagonal Architecture", "Vitest", "OpenShift", "Kibana", "Grafana", "Pinia"],
+      "location": "Madrid",
+      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "order": 1,
+      "isExtra": false
+    },
+    {
+      "id": "exp-neoris",
+      "profileId": "default",
+      "company": "NEORIS",
+      "role": "Desarrollador de Software",
+      "position": "Desarrollador de Software",
+      "period": "Ene 2021 – Ene 2025",
+      "startDate": "2021-01-01T00:00:00.000Z",
+      "endDate": "2025-01-01T00:00:00.000Z",
+      "current": false,
+      "description": "Desarrollo full-stack ágil en proyectos internacionales de gran escala.",
+      "highlights": [
+        "Gestión y ejecución de entregables en equipos internacionales mediante metodologías Agile y Scrum.",
+        "Auditoría técnica, refactorización y mitigación de vulnerabilidades de seguridad en plataforma e-learning con CodeIgniter.",
+        "Desarrollo e integración de módulos y arquitecturas web modernas con Laravel, Vue.js y bases de datos relacionales."
+      ],
+      "stack": ["Vue.js", "Laravel", "PHP", "CodeIgniter", "MySQL", "Scrum", "REST APIs", "Git"],
+      "location": "Madrid",
+      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "order": 2,
+      "isExtra": false
+    },
+    {
+      "id": "exp-isec",
+      "profileId": "default",
+      "company": "I-SEC Spain Aviation Security S.L",
+      "role": "Técnico de TI",
+      "position": "Técnico de TI",
+      "period": "Ene 2021 – Jun 2021",
+      "startDate": "2021-01-01T00:00:00.000Z",
+      "endDate": "2021-06-01T00:00:00.000Z",
+      "current": false,
+      "description": "Infraestructura técnica, soporte de sistemas aeronáuticos y desarrollo web interno.",
+      "highlights": [
+        "Administración de infraestructura de red y plataformas e-learning como interlocutor técnico local con Países Bajos.",
+        "Desarrollo de aplicaciones web internas con Node.js y JavaScript para acelerar y simplificar flujos operativos.",
+        "Mantenimiento continuo y soporte de sistemas de control de accesos de seguridad aeroportuaria."
+      ],
+      "stack": ["JavaScript", "Node.js", "Handlebars", "Redes & Seguridad", "Firebase", "SysAdmin"],
+      "location": "Madrid",
+      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "order": 3,
+      "isExtra": false
+    },
+    {
+      "id": "exp-esf",
+      "profileId": "default",
+      "company": "Economistas Sin Fronteras",
+      "role": "Desarrollador Full Stack",
+      "position": "Desarrollador Full Stack",
+      "period": "Jun 2021 – Dic 2021",
+      "startDate": "2021-06-01T00:00:00.000Z",
+      "endDate": "2021-12-31T00:00:00.000Z",
+      "current": false,
+      "description": "Diseño y desarrollo end-to-end de aplicación web formativa inclusiva.",
+      "highlights": [
+        "Desarrollo completo de 'Banco Econos', plataforma interactiva de formación financiera adaptada para personas mayores.",
+        "Diseño inclusivo con accesibilidad WCAG, componentes visuales de alto contraste y retroalimentación didáctica clara.",
+        "Simulador guiado de operativas bancarias cotidianas para combatir la brecha digital en banca."
+      ],
+      "stack": ["JavaScript", "HTML5 / Sass", "PHP", "Interactive UX", "WCAG Accessibility"],
+      "location": "Remoto",
+      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "order": 4,
+      "isExtra": false
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "profileId": "default",
+      "institution": "TEIDE IV",
+      "degree": "Desarrollo de Aplicaciones Multiplataforma - Grado Superior",
+      "fieldOfStudy": "Desarrollo de Software y Arquitectura",
+      "startDate": "2018-09-01T00:00:00.000Z",
+      "endDate": "2021-06-30T00:00:00.000Z",
+      "gpa": "",
+      "description": "Especialización en desarrollo multiplataforma, bases de datos y patrones de diseño de software.",
+      "achievement": "Grado Superior DAM"
+    },
+    {
+      "id": "edu-2",
+      "profileId": "default",
+      "institution": "TEIDE IV",
+      "degree": "Sistemas Microinformáticos y Redes - Grado Medio",
+      "fieldOfStudy": "Infraestructura, Redes y Sistemas",
+      "startDate": "2016-09-01T00:00:00.000Z",
+      "endDate": "2018-06-30T00:00:00.000Z",
+      "gpa": "",
+      "description": "Administración de redes locales, servidores, seguridad informática y montaje de sistemas.",
+      "achievement": "Grado Medio SMR"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-opengym",
+      "profileId": "default",
+      "title": "openGym",
+      "name": "openGym",
+      "type": "web",
+      "summary": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
+      "description": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
+      "features": [
+        "Gestión de rutinas de ejercicio personalizadas y registro de actividad",
+        "Temporizador y seguimiento interactivo de descansos y repeticiones",
+        "Despliegue y optimización en Render con tiempos de respuesta ágiles"
+      ],
+      "stack": ["JavaScript", "HTML5", "CSS3", "Web App", "Render"],
+      "tags": ["JavaScript", "Fitness", "Web App", "Render"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://opengym-web-8jf2.onrender.com/",
+      "url": "https://opengym-web-8jf2.onrender.com/",
+      "repoUrl": "https://github.com/dannycastle",
+      "featured": true,
+      "createdAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "proj-myhome",
+      "profileId": "default",
+      "title": "MyHome · Portal Inmobiliario",
+      "name": "MyHome · Portal Inmobiliario",
+      "type": "web",
+      "summary": "Portal para centralizar y explorar pisos de entidades bancarias, subastas AEAT y obra nueva, optimizando radicalmente el tiempo de búsqueda.",
+      "description": "Portal para centralizar y explorar pisos de entidades bancarias, subastas AEAT y obra nueva, optimizando radicalmente el tiempo de búsqueda.",
+      "features": [
+        "Centralización de oportunidades inmobiliarias bancarias en una única plataforma",
+        "Filtros de búsqueda avanzada por precio, subasta, ubicación y estado",
+        "Arquitectura construida en Astro v7 con rendimiento extremo y SEO estructurado"
+      ],
+      "stack": ["Astro", "TypeScript", "Tailwind CSS", "Vercel", "Web Scraping"],
+      "tags": ["Astro", "TypeScript", "Real Estate", "Vercel"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://my-home-portal.vercel.app/",
+      "url": "https://my-home-portal.vercel.app/",
+      "repoUrl": "https://github.com/dannycastle",
+      "featured": true,
+      "createdAt": "2026-07-15T00:00:00.000Z"
+    },
+    {
+      "id": "proj-areadirecta",
+      "profileId": "default",
+      "title": "AreaDirecta · Venta de Vehículos",
+      "name": "AreaDirecta · Venta de Vehículos",
+      "type": "web",
+      "summary": "Portal comercial de automoción de ocasión y segunda mano en Córdoba con más de 1.000 ventas realizadas, cotizador y catálogo dinámico.",
+      "description": "Portal comercial de automoción de ocasión y segunda mano en Córdoba con más de 1.000 ventas realizadas, cotizador y catálogo dinámico.",
+      "features": [
+        "Catálogo de vehículos con filtrado granular por precio, cuota mensual y carrocería",
+        "Calculadora de financiación integrada y solicitud rápida de cita",
+        "Optimización de embudo de ventas y conversión directa de leads comerciales"
+      ],
+      "stack": ["JavaScript", "HTML5", "CSS3 / Sass", "Responsive Design", "SEO"],
+      "tags": ["Automoción", "E-Commerce", "JavaScript", "Financiación"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://areadirecta.es/",
+      "url": "https://areadirecta.es/",
+      "repoUrl": "",
+      "featured": true,
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "proj-toldoperfil",
+      "profileId": "default",
+      "title": "Toldo Perfil · Pérgolas y Toldos",
+      "name": "Toldo Perfil · Pérgolas y Toldos",
+      "type": "web",
+      "summary": "Landing corporativa y catálogo para empresa fabricante e instaladora de toldos a medida y pérgolas bioclimáticas en la Comunidad de Madrid.",
+      "description": "Landing corporativa y catálogo para empresa fabricante e instaladora de toldos a medida y pérgolas bioclimáticas en la Comunidad de Madrid.",
+      "features": [
+        "Catálogo visual de modelos con especificaciones de resistencia térmica y materiales",
+        "Formulario interactivo de solicitud de presupuestos directos sin intermediarios",
+        "Estructura orientada a posicionamiento orgánico local en Google"
+      ],
+      "stack": ["Astro", "JavaScript", "CSS3", "Local SEO", "Lead Gen"],
+      "tags": ["Astro", "Landing Page", "SEO", "Responsive"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://toldoperfil.es/",
+      "url": "https://toldoperfil.es/",
+      "repoUrl": "",
+      "featured": false,
+      "createdAt": "2024-05-10T00:00:00.000Z"
+    },
+    {
+      "id": "proj-arte19",
+      "profileId": "default",
+      "title": "Arte 19 · Optimización Web",
+      "name": "Arte 19 · Optimización Web",
+      "type": "web",
+      "summary": "Proyecto de reingeniería y optimización técnica de la web original arte19.com, recortando tiempos de respuesta y modernizando el frontend.",
+      "description": "Proyecto de reingeniería y optimización técnica de la web original arte19.com, recortando tiempos de respuesta y modernizando el frontend.",
+      "features": [
+        "Optimización de recursos estáticos, compresión de assets y deferring de scripts",
+        "Reducción sustancial del First Contentful Paint (FCP) y Largest Contentful Paint (LCP)",
+        "Despliegue ágil en Vercel con evaluación continua de rendimiento"
+      ],
+      "stack": ["JavaScript", "Web Performance", "Lighthouse", "CSS3", "Vercel"],
+      "tags": ["Web Performance", "Optimization", "Lighthouse", "Vercel"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://arte19.vercel.app/",
+      "url": "https://arte19.vercel.app/",
+      "repoUrl": "https://github.com/dannycastle",
+      "featured": false,
+      "createdAt": "2023-06-15T00:00:00.000Z"
+    },
+    {
+      "id": "proj-bancoeconos",
+      "profileId": "default",
+      "title": "Banco Econos · Finanzas para Mayores",
+      "name": "Banco Econos · Finanzas para Mayores",
+      "type": "web",
+      "summary": "Plataforma interactiva para Economistas Sin Fronteras con el objetivo de capacitar a personas mayores en su relación con la banca digital.",
+      "description": "Plataforma interactiva para Economistas Sin Fronteras con el objetivo de capacitar a personas mayores en su relación con la banca digital.",
+      "features": [
+        "Interfaz intuitiva de accesibilidad universal adaptada a mayores de 65 años",
+        "Simulador guiado de cajeros automáticos y operativa bancaria electrónica",
+        "Módulos didácticos gamificados con feedback visual inmediato"
+      ],
+      "stack": ["JavaScript", "HTML5", "CSS3 / Sass", "Responsive Design", "A11y"],
+      "tags": ["JavaScript", "HTML5", "A11y", "Educación", "Inclusión"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://www.bancoeconos.org/",
+      "url": "https://www.bancoeconos.org/",
+      "repoUrl": "https://github.com/danielcastilloguindos",
+      "featured": true,
+      "createdAt": "2021-06-01T00:00:00.000Z"
+    },
+    {
+      "id": "proj-cyber-runner",
+      "profileId": "default",
+      "title": "Retro Cyber Runner",
+      "name": "Retro Cyber Runner",
+      "type": "game",
+      "summary": "Videojuego arcade 2D de estética synthwave con bucle de juego a 60 FPS, mecánicas de salto temporal y efectos de partículas canvas.",
+      "description": "Videojuego arcade 2D de estética synthwave con bucle de juego a 60 FPS, mecánicas de salto temporal y efectos de partículas canvas.",
+      "features": [
+        "Motor custom de físicas 2D con detección precisa de colisiones AABB",
+        "Fondo parallax infinito de múltiples capas y post-procesado cromático",
+        "Efectos sonoros dinámicos generados procedimentalmente con WebAudio API"
+      ],
+      "stack": ["JavaScript", "HTML5 Canvas", "WebAudio API", "Game Loop", "Pixel Art"],
+      "tags": ["Canvas", "GameDev", "WebAudio", "Arcade"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://danicastillo.es",
+      "url": "https://danicastillo.es",
+      "repoUrl": "https://github.com/dannycastle/myPortfolio",
+      "featured": false,
+      "createdAt": "2026-11-09T00:00:00.000Z"
+    },
+    {
+      "id": "proj-dungeon-quest",
+      "profileId": "default",
+      "title": "Dungeon Quest 8-Bit",
+      "name": "Dungeon Quest 8-Bit",
+      "type": "game",
+      "summary": "Micro-RPG táctico en mazmorras con generación procedural por partición del espacio binario (BSP) y combate estratégico por turnos.",
+      "description": "Micro-RPG táctico en mazmorras con generación procedural por partición del espacio binario (BSP) y combate estratégico por turnos.",
+      "features": [
+        "Generador procedimental de mapas y colocación inteligente de tesoros",
+        "Inteligencia artificial de monstruos basada en pathfinding A*",
+        "Sistema de inventario ligero y guardado automático en navegador"
+      ],
+      "stack": ["TypeScript", "Canvas 2D", "Algoritmos A*", "Procedural Gen", "State Machine"],
+      "tags": ["TypeScript", "Roguelike", "Pathfinding", "GameDev"],
+      "previewImageUrl": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://danicastillo.es",
+      "url": "https://danicastillo.es",
+      "repoUrl": "https://github.com/dannycastle/myPortfolio",
+      "featured": false,
+      "createdAt": "2026-11-10T00:00:00.000Z"
+    }
+  ],
+  "skills": [
+    { "id": "sk-1", "profileId": "default", "name": "Vue 3 (Composition API)", "category": "Frontend", "level": 5 },
+    { "id": "sk-2", "profileId": "default", "name": "TypeScript", "category": "Frontend", "level": 5 },
+    { "id": "sk-3", "profileId": "default", "name": "Node.js", "category": "Backend", "level": 4 },
+    { "id": "sk-4", "profileId": "default", "name": "PHP (Laravel / CodeIgniter)", "category": "Backend", "level": 4 },
+    { "id": "sk-5", "profileId": "default", "name": "Arquitectura Hexagonal & Clean", "category": "Arquitectura", "level": 5 },
+    { "id": "sk-6", "profileId": "default", "name": "Kibana, Grafana & AppDynamics", "category": "DevOps", "level": 4 },
+    { "id": "sk-7", "profileId": "default", "name": "Trabajo en equipo & Agile", "category": "Metodología", "level": 5 }
+  ],
+  "socialLinks": [
+    {
+      "id": "social-1",
+      "profileId": "default",
+      "platform": "GitHub",
+      "url": "https://github.com/dannycastle",
+      "username": "dannycastle"
+    },
+    {
+      "id": "social-2",
+      "profileId": "default",
+      "platform": "Web",
+      "url": "https://danicastillo.es",
+      "username": "danicastillo.es"
+    }
+  ],
+  "contactInfo": {
+    "id": "contact-1",
+    "profileId": "default",
+    "email": "danielcastilloguindos@gmail.com",
+    "phone": "+34 605 995 969",
+    "whatsapp": "+34 605 995 969",
+    "location": "Madrid",
+    "createdAt": "2026-11-02T12:00:00.000Z",
+    "updatedAt": "2026-11-10T22:45:00.000Z"
+  }
+}
