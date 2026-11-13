@@ -3,13 +3,13 @@
     "id": "default",
     "name": "Daniel Castillo Guindos",
     "title": "Full Stack Developer",
-    "bio": "Frontend Developer especializado en el ecosistema Vue 3 (Composition API), JavaScript y Node.js bajo Arquitectura Hexagonal. Experiencia en el desarrollo de flujos críticos de alta concurrencia en retail (Login, Wallet, PLP, PDP y Checkout), con foco en rendimiento web, cobertura de pruebas unitarias (Vitest) y observabilidad en producción (Kibana, Grafana, AppDynamics). Visión técnica Full Stack complementada con sólida experiencia previa en backend PHP (Laravel y CodeIgniter) y trabajo en equipos ágiles e internacionales.",
+    "bio": "Frontend Developer especializado en el ecosistema Vue 3 y TypeScript bajo Arquitectura Hexagonal, con foco en alto rendimiento web y flujos críticos de alta concurrencia.",
     "email": "danielcastilloguindos@gmail.com",
     "phone": "+34 605 995 969",
     "whatsapp": "+34 605 995 969",
     "location": "Madrid",
     "avatarUrl": "",
-    "cvUrl": "",
+    "cvUrl": "/CV_Daniel_Castillo_2026.pdf",
     "themeId": "default",
     "headerTitle": "Daniel Castillo Guindos",
     "headerLogoUrl": "",
@@ -17,7 +17,6 @@
       { "id": "link-1", "label": "Inicio", "url": "#hero" },
       { "id": "link-2", "label": "Sobre mí", "url": "#about" },
       { "id": "link-3", "label": "Experiencias", "url": "#experiencias" },
-      { "id": "link-4", "label": "Estudios", "url": "#estudios" },
       { "id": "link-5", "label": "Portfolio", "url": "#portfolio" },
       { "id": "link-6", "label": "Contacto", "url": "#contacto" }
     ],
@@ -282,52 +281,6 @@
       "repoUrl": "https://github.com/danielcastilloguindos",
       "featured": true,
       "createdAt": "2021-06-01T00:00:00.000Z"
-    },
-    {
-      "id": "proj-cyber-runner",
-      "profileId": "default",
-      "title": "Retro Cyber Runner",
-      "name": "Retro Cyber Runner",
-      "type": "game",
-      "summary": "Videojuego arcade 2D de estética synthwave con bucle de juego a 60 FPS, mecánicas de salto temporal y efectos de partículas canvas.",
-      "description": "Videojuego arcade 2D de estética synthwave con bucle de juego a 60 FPS, mecánicas de salto temporal y efectos de partículas canvas.",
-      "features": [
-        "Motor custom de físicas 2D con detección precisa de colisiones AABB",
-        "Fondo parallax infinito de múltiples capas y post-procesado cromático",
-        "Efectos sonoros dinámicos generados procedimentalmente con WebAudio API"
-      ],
-      "stack": ["JavaScript", "HTML5 Canvas", "WebAudio API", "Game Loop", "Pixel Art"],
-      "tags": ["Canvas", "GameDev", "WebAudio", "Arcade"],
-      "previewImageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
-      "imageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
-      "liveUrl": "https://danicastillo.es",
-      "url": "https://danicastillo.es",
-      "repoUrl": "https://github.com/dannycastle/myPortfolio",
-      "featured": false,
-      "createdAt": "2026-11-09T00:00:00.000Z"
-    },
-    {
-      "id": "proj-dungeon-quest",
-      "profileId": "default",
-      "title": "Dungeon Quest 8-Bit",
-      "name": "Dungeon Quest 8-Bit",
-      "type": "game",
-      "summary": "Micro-RPG táctico en mazmorras con generación procedural por partición del espacio binario (BSP) y combate estratégico por turnos.",
-      "description": "Micro-RPG táctico en mazmorras con generación procedural por partición del espacio binario (BSP) y combate estratégico por turnos.",
-      "features": [
-        "Generador procedimental de mapas y colocación inteligente de tesoros",
-        "Inteligencia artificial de monstruos basada en pathfinding A*",
-        "Sistema de inventario ligero y guardado automático en navegador"
-      ],
-      "stack": ["TypeScript", "Canvas 2D", "Algoritmos A*", "Procedural Gen", "State Machine"],
-      "tags": ["TypeScript", "Roguelike", "Pathfinding", "GameDev"],
-      "previewImageUrl": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
-      "imageUrl": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
-      "liveUrl": "https://danicastillo.es",
-      "url": "https://danicastillo.es",
-      "repoUrl": "https://github.com/dannycastle/myPortfolio",
-      "featured": false,
-      "createdAt": "2026-11-10T00:00:00.000Z"
     }
   ],
   "skills": [

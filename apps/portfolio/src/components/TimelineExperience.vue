@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, shallowRef } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Experience, WorkExperience } from '@portfolio/core';
 import type { Theme } from '../themes/index';
 import { prefersReducedMotion } from '../lib/format';
+import { VideoScrubController } from '../lib/video-scrubber';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,75 +20,74 @@ const rootEl = ref<HTMLElement | null>(null);
 const timelineWrapperEl = ref<HTMLElement | null>(null);
 const spineProgressEl = ref<HTMLElement | null>(null);
 
-// Dual-layer video elements for smooth crossfading without cuts
 const videoA = ref<HTMLVideoElement | null>(null);
 const videoB = ref<HTMLVideoElement | null>(null);
-const activeVideoSlot = ref<'A' | 'B'>('A');
-const activeVideoUrl = shallowRef<string | null>(null);
 
 let ctx: gsap.Context | null = null;
 let mm: gsap.MatchMedia | null = null;
+let videoScrubber: VideoScrubController | null = null;
+let tiltCleanups: Array<() => void> = [];
 
 /**
- * Crossfades between video buffers smoothly and updates current video playback
+ * Initializes 3D Tilt Parallax on .exp-tilt-card wrappers using gsap.quickTo
  */
-function switchBackgroundVideo(url?: string): void {
-  if (!url) {
-    if (videoA.value) gsap.to(videoA.value, { autoAlpha: 0, duration: 0.5, overwrite: 'auto' });
-    if (videoB.value) gsap.to(videoB.value, { autoAlpha: 0, duration: 0.5, overwrite: 'auto' });
-    activeVideoUrl.value = null;
+function setup3DTiltCards(): void {
+  tiltCleanups.forEach((cleanup) => cleanup());
+  tiltCleanups = [];
+
+  if (
+    prefersReducedMotion() ||
+    typeof window === 'undefined' ||
+    !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  ) {
     return;
   }
 
-  if (activeVideoUrl.value === url) {
-    return;
-  }
+  const tiltCards = rootEl.value?.querySelectorAll<HTMLElement>('.exp-tilt-card') ?? [];
 
-  const incomingSlot = activeVideoSlot.value === 'A' ? 'B' : 'A';
-  const incomingVideo = incomingSlot === 'A' ? videoA.value : videoB.value;
-  const outgoingVideo = activeVideoSlot.value === 'A' ? videoA.value : videoB.value;
+  tiltCards.forEach((card) => {
+    // Isolated quickTo setters for rotationX & rotationY
+    const rxTo = gsap.quickTo(card, 'rotationX', { duration: 0.45, ease: 'power2.out' });
+    const ryTo = gsap.quickTo(card, 'rotationY', { duration: 0.45, ease: 'power2.out' });
 
-  if (!incomingVideo) return;
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-  activeVideoUrl.value = url;
-  activeVideoSlot.value = incomingSlot;
+      // Max tilt: +/- 10 degrees
+      ryTo(x * 12);
+      rxTo(-y * 12);
+    };
 
-  incomingVideo.src = url;
-  incomingVideo.load();
+    const onMouseLeave = () => {
+      rxTo(0);
+      ryTo(0);
+    };
 
-  const onLoadedMetadata = () => {
-    incomingVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
-    incomingVideo.currentTime = 0;
-    incomingVideo.pause();
+    card.addEventListener('mousemove', onMouseMove);
+    card.addEventListener('mouseleave', onMouseLeave);
 
-    // Crossfade: incoming layer fades in, outgoing layer fades out
-    gsap.to(incomingVideo, { autoAlpha: 0.45, duration: 0.65, ease: 'power2.inOut', overwrite: 'auto' });
-    if (outgoingVideo) {
-      gsap.to(outgoingVideo, { autoAlpha: 0, duration: 0.65, ease: 'power2.inOut', overwrite: 'auto' });
-    }
-  };
-
-  if (incomingVideo.readyState >= 1) {
-    onLoadedMetadata();
-  } else {
-    incomingVideo.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
-  }
+    tiltCleanups.push(() => {
+      card.removeEventListener('mousemove', onMouseMove);
+      card.removeEventListener('mouseleave', onMouseLeave);
+      gsap.set(card, { rotationX: 0, rotationY: 0 });
+    });
+  });
 }
 
-/**
- * Scrubs active video playback according to scroll progress
- */
-function scrubActiveVideo(progress: number): void {
-  const currentVideo = activeVideoSlot.value === 'A' ? videoA.value : videoB.value;
-  if (!currentVideo || isNaN(currentVideo.duration) || currentVideo.duration === 0) return;
-  currentVideo.currentTime = progress * currentVideo.duration;
-}
-
-function initTimelineAnimations(): void {
+function initTimeline(): void {
   if (!rootEl.value || !timelineWrapperEl.value) return;
 
+  // Initialize lerp-based video scrubber with dual buffer
+  videoScrubber = new VideoScrubController({
+    lerpFactor: 0.14,
+    crossfadeDuration: 0.65,
+  });
+  videoScrubber.bindVideos(videoA.value, videoB.value);
+
   ctx = gsap.context(() => {
-    // 1. Overall timeline vertical spine drawing (scaleY from top center)
+    // 1. Overall timeline vertical spine progress drawing (scaleY from top center)
     if (spineProgressEl.value) {
       gsap.fromTo(
         spineProgressEl.value,
@@ -108,37 +108,38 @@ function initTimelineAnimations(): void {
     // 2. Responsive matching via gsap.matchMedia
     mm = gsap.matchMedia();
 
-    // Setup cards animations for both desktop and mobile
     mm.add('(min-width: 0px)', () => {
-      const items = rootEl.value?.querySelectorAll<HTMLElement>('.experience-milestone') ?? [];
+      const milestones = rootEl.value?.querySelectorAll<HTMLElement>('.experience-milestone') ?? [];
 
-      items.forEach((item, index) => {
-        const card = item.querySelector<HTMLElement>('.experience-card');
-        const node = item.querySelector<HTMLElement>('.spine-node');
+      milestones.forEach((milestone, index) => {
+        // Outer wrapper: exclusively animated by ScrollTrigger (y and autoAlpha)
+        const scrollNode = milestone.querySelector<HTMLElement>('.exp-scroll-node');
+        const node = milestone.querySelector<HTMLElement>('.spine-node');
         const exp = props.experiences[index];
         const videoSrc = exp?.backgroundVideoUrl || exp?.videoUrl;
 
-        if (!card) return;
+        if (!scrollNode) return;
 
-        // Ensure starting state (only transform and autoAlpha, no CSS transition conflict)
-        gsap.set(card, { y: 60, autoAlpha: 0 });
+        // Set initial state without CSS transition conflicts
+        gsap.set(scrollNode, { y: 60, autoAlpha: 0 });
 
-        // ScrollTrigger scrubbed timeline: enters from bottom (y:60, alpha:0), stays at center (y:0, alpha:1), leaves top (y:-60, alpha:0)
+        // Scroll-scrubbed timeline: enters from bottom, centers, leaves top
         const cardTl = gsap.timeline({
           scrollTrigger: {
-            trigger: item,
+            trigger: milestone,
             start: 'top 85%',
             end: 'bottom 15%',
             scrub: 1,
             onEnter: () => {
-              switchBackgroundVideo(videoSrc);
+              videoScrubber?.switchVideo(videoSrc);
             },
             onEnterBack: () => {
-              switchBackgroundVideo(videoSrc);
+              videoScrubber?.switchVideo(videoSrc);
             },
             onUpdate: (self) => {
               if (self.isActive && videoSrc) {
-                scrubActiveVideo(self.progress);
+                // Non-blocking lerped scrub
+                videoScrubber?.setProgress(self.progress);
               }
             },
           },
@@ -146,24 +147,24 @@ function initTimelineAnimations(): void {
 
         // Enter: y: 60 -> y: 0, autoAlpha: 0 -> 1
         cardTl.fromTo(
-          card,
+          scrollNode,
           { y: 60, autoAlpha: 0 },
           { y: 0, autoAlpha: 1, duration: 1, ease: 'power1.out' },
         );
 
         // Center dwell
-        cardTl.to(card, { y: 0, autoAlpha: 1, duration: 0.8 });
+        cardTl.to(scrollNode, { y: 0, autoAlpha: 1, duration: 0.8 });
 
         // Exit: y: 0 -> y: -60, autoAlpha: 1 -> 0
         cardTl.to(
-          card,
+          scrollNode,
           { y: -60, autoAlpha: 0, duration: 1, ease: 'power1.in' },
         );
 
-        // Central Node highlight synchronization
+        // Central Node illumination
         if (node) {
           ScrollTrigger.create({
-            trigger: item,
+            trigger: milestone,
             start: 'top 60%',
             end: 'bottom 40%',
             onToggle: (self) => {
@@ -179,24 +180,29 @@ function initTimelineAnimations(): void {
         }
       });
     });
+
+    // 3. Setup 3D Tilt Parallax on inner wrappers
+    setup3DTiltCards();
   }, rootEl.value);
 }
 
 onMounted(() => {
   nextTick(() => {
     if (prefersReducedMotion()) {
-      // In reduced motion mode, show cards statically without scrubbed shifts
-      const cards = rootEl.value?.querySelectorAll<HTMLElement>('.experience-card') ?? [];
-      cards.forEach((card) => {
-        gsap.set(card, { y: 0, autoAlpha: 1 });
+      const scrollNodes = rootEl.value?.querySelectorAll<HTMLElement>('.exp-scroll-node') ?? [];
+      scrollNodes.forEach((node) => {
+        gsap.set(node, { y: 0, autoAlpha: 1 });
       });
       return;
     }
-    initTimelineAnimations();
+    initTimeline();
   });
 });
 
 onUnmounted(() => {
+  tiltCleanups.forEach((cleanup) => cleanup());
+  tiltCleanups = [];
+
   if (mm) {
     mm.revert();
     mm = null;
@@ -205,13 +211,9 @@ onUnmounted(() => {
     ctx.revert();
     ctx = null;
   }
-  if (videoA.value) {
-    videoA.value.pause();
-    videoA.value.src = '';
-  }
-  if (videoB.value) {
-    videoB.value.pause();
-    videoB.value.src = '';
+  if (videoScrubber) {
+    videoScrubber.destroy();
+    videoScrubber = null;
   }
 });
 </script>
@@ -223,7 +225,7 @@ onUnmounted(() => {
     class="experience-section portfolio-section"
     aria-labelledby="experience-heading"
   >
-    <!-- Sticky Fullscreen Video Layer with Dual-Buffer Crossfading -->
+    <!-- Pinned Background Video Container with Dual-Layer Lerp Scrubber -->
     <div class="video-background-pinned" aria-hidden="true">
       <video
         ref="videoA"
@@ -239,27 +241,25 @@ onUnmounted(() => {
         playsinline
         preload="auto"
       ></video>
-      <!-- Ambient Fallback Gradient -->
       <div class="video-placeholder"></div>
-      <!-- Subtle Dark Overlay for Legible Typography -->
       <div class="video-overlay-tint"></div>
     </div>
 
     <div class="container">
       <header class="section-header">
+        <span class="section-mono-tag font-mono">// 02. CAREER TRAJECTORY</span>
         <h2 id="experience-heading" class="section-title">Experiencia Laboral</h2>
-        <p class="section-subtitle">Trayectoria profesional orientada a rendimiento y arquitectura web</p>
+        <p class="section-subtitle">Ingeniería frontend, arquitectura hexagonal y observabilidad en producción</p>
       </header>
 
       <!-- Central Zig-Zag Timeline Wrapper -->
       <div ref="timelineWrapperEl" class="timeline-wrapper">
-        <!-- Background Spine Line (Dim Base) -->
+        <!-- Vertical Spine Line Track -->
         <div class="timeline-spine-track" aria-hidden="true">
-          <!-- Animated Progress Spine (Drawn on scroll) -->
           <div ref="spineProgressEl" class="timeline-spine-progress"></div>
         </div>
 
-        <!-- Experience Milestones (Zig-zag desktop / Left-aligned mobile) -->
+        <!-- Experience Milestones (Odd: Left / Even: Right) -->
         <div
           v-for="(exp, index) in experiences"
           :key="exp.id || exp.company"
@@ -271,35 +271,43 @@ onUnmounted(() => {
             <span class="spine-node-dot"></span>
           </div>
 
-          <!-- Experience Card Item -->
-          <article class="experience-card">
-            <!-- Header: Role & Period -->
-            <div class="card-header">
-              <span class="period-badge">{{ exp.period || '2021 – Presente' }}</span>
-              <h3 class="role-title">{{ exp.role || exp.position }}</h3>
-              <div class="company-row">
-                <span class="company-name">{{ exp.company }}</span>
-                <span v-if="exp.location" class="location-tag">· {{ exp.location }}</span>
+          <!-- LAYER 1: Scroll-driven Outer Wrapper (Strictly ScrollTrigger: y & autoAlpha) -->
+          <div class="exp-scroll-node">
+            <!-- LAYER 2: Inner Tilt Card (Isolated for Tilt 3D: rotateX/rotateY) -->
+            <article class="exp-tilt-card">
+              <!-- Technical Index & Period Tag -->
+              <div class="card-meta-top font-mono">
+                <span class="exp-index">// 0{{ index + 1 }}</span>
+                <span class="period-badge">{{ exp.period || '2021 – Presente' }}</span>
               </div>
-            </div>
 
-            <!-- Highlights / Key Accomplishments -->
-            <ul v-if="exp.highlights && exp.highlights.length" class="highlights-list">
-              <li v-for="(highlight, hIdx) in exp.highlights" :key="hIdx" class="highlight-item">
-                {{ highlight }}
-              </li>
-            </ul>
-            <p v-else-if="exp.description" class="card-desc">
-              {{ exp.description }}
-            </p>
+              <!-- Header: Role & Company -->
+              <div class="card-header">
+                <h3 class="role-title">{{ exp.role || exp.position }}</h3>
+                <div class="company-row">
+                  <span class="company-name">{{ exp.company }}</span>
+                  <span v-if="exp.location" class="location-tag font-mono">· {{ exp.location }}</span>
+                </div>
+              </div>
 
-            <!-- Tech Stack Badges -->
-            <div v-if="exp.stack && exp.stack.length" class="stack-wrapper">
-              <span v-for="tech in exp.stack" :key="tech" class="tech-pill">
-                {{ tech }}
-              </span>
-            </div>
-          </article>
+              <!-- Key Accomplishments -->
+              <ul v-if="exp.highlights && exp.highlights.length" class="highlights-list">
+                <li v-for="(highlight, hIdx) in exp.highlights" :key="hIdx" class="highlight-item">
+                  {{ highlight }}
+                </li>
+              </ul>
+              <p v-else-if="exp.description" class="card-desc">
+                {{ exp.description }}
+              </p>
+
+              <!-- Tech Stack Badges -->
+              <div v-if="exp.stack && exp.stack.length" class="stack-wrapper font-mono">
+                <span v-for="tech in exp.stack" :key="tech" class="tech-pill">
+                  {{ tech }}
+                </span>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </div>
@@ -310,7 +318,7 @@ onUnmounted(() => {
 .experience-section {
   position: relative;
   width: 100%;
-  padding: 100px 0 120px;
+  padding: 110px 0 130px;
   overflow: clip;
 }
 
@@ -324,11 +332,22 @@ onUnmounted(() => {
 
 .section-header {
   text-align: center;
-  margin-bottom: 70px;
+  margin-bottom: 75px;
+}
+
+.section-mono-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  opacity: 0.9;
 }
 
 .section-title {
-  font-size: 2.2rem;
+  font-family: var(--font-display);
+  font-size: 2.35rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 12px;
@@ -338,10 +357,12 @@ onUnmounted(() => {
 .section-subtitle {
   font-size: 1.05rem;
   color: var(--color-text-secondary);
-  margin: 0;
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.5;
 }
 
-/* Pinned sticky background video container */
+/* Pinned Sticky Video Background */
 .video-background-pinned {
   position: sticky;
   top: 0;
@@ -368,14 +389,14 @@ onUnmounted(() => {
 .video-placeholder {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(42, 42, 55, 0.7) 0%, rgba(31, 31, 40, 0.96) 100%);
+  background: radial-gradient(circle at 50% 40%, rgba(42, 42, 55, 0.72) 0%, rgba(31, 31, 40, 0.97) 100%);
   z-index: -1;
 }
 
 .video-overlay-tint {
   position: absolute;
   inset: 0;
-  background: rgba(31, 31, 40, 0.75);
+  background: rgba(26, 26, 34, 0.76);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -383,12 +404,12 @@ onUnmounted(() => {
 /* Timeline Layout */
 .timeline-wrapper {
   position: relative;
-  max-width: 1040px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 20px 0 60px;
 }
 
-/* Vertical central spine line */
+/* Vertical Spine Track */
 .timeline-spine-track {
   position: absolute;
   top: 0;
@@ -411,12 +432,12 @@ onUnmounted(() => {
     var(--color-accent) 0%,
     var(--color-accent-hover) 100%
   );
-  box-shadow: 0 0 10px rgba(230, 195, 132, 0.6);
+  box-shadow: 0 0 12px rgba(230, 195, 132, 0.65);
   transform-origin: top center;
   will-change: transform;
 }
 
-/* Milestone item wrapper */
+/* Milestone Item */
 .experience-milestone {
   position: relative;
   display: flex;
@@ -433,7 +454,7 @@ onUnmounted(() => {
   justify-content: flex-end;
 }
 
-/* Center node connecting line */
+/* Center Node */
 .spine-node {
   position: absolute;
   top: 50%;
@@ -454,7 +475,7 @@ onUnmounted(() => {
 
 .spine-node.is-active {
   border-color: var(--color-accent-hover);
-  box-shadow: 0 0 14px rgba(255, 160, 102, 0.8), 0 0 24px rgba(230, 195, 132, 0.4);
+  box-shadow: 0 0 16px rgba(255, 160, 102, 0.85), 0 0 24px rgba(230, 195, 132, 0.5);
 }
 
 .spine-node-dot {
@@ -468,20 +489,61 @@ onUnmounted(() => {
   background: var(--color-accent-hover);
 }
 
-/* Experience Card */
-.experience-card {
+/* Layer 1: Outer Scroll Node (Handled ONLY by GSAP ScrollTrigger) */
+.exp-scroll-node {
   position: relative;
-  width: 44%;
-  max-width: 470px;
-  background: rgba(42, 42, 55, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md, 2px);
-  padding: 30px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  width: 45%;
+  max-width: 480px;
+  perspective: 1000px;
   z-index: 2;
   will-change: transform, opacity;
+}
+
+/* Layer 2: Inner Tilt Card (Isolated for Hover & 3D Tilt) */
+.exp-tilt-card {
+  position: relative;
+  width: 100%;
+  background: rgba(38, 38, 50, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 2px);
+  padding: 32px 30px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+  transform-style: preserve-3d;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.exp-tilt-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+
+/* Card Metadata Header */
+.card-meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.exp-index {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.08em;
+}
+
+.period-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: rgba(220, 215, 186, 0.08);
+  border: 1px solid var(--color-border);
+  padding: 3px 8px;
+  border-radius: 2px;
 }
 
 /* Card Header */
@@ -489,21 +551,8 @@ onUnmounted(() => {
   margin-bottom: 18px;
 }
 
-.period-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-accent);
-  background: rgba(230, 195, 132, 0.12);
-  border: 1px solid rgba(230, 195, 132, 0.3);
-  padding: 3px 10px;
-  border-radius: 2px;
-  margin-bottom: 10px;
-}
-
 .role-title {
+  font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-text);
@@ -525,15 +574,16 @@ onUnmounted(() => {
 }
 
 .location-tag {
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   color: var(--color-text-secondary);
+  opacity: 0.85;
 }
 
 /* Highlights List */
 .highlights-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 20px;
+  margin: 0 0 22px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -563,7 +613,7 @@ onUnmounted(() => {
   margin: 0 0 20px;
 }
 
-/* Tech Stack Badges */
+/* Stack Badges */
 .stack-wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -571,16 +621,16 @@ onUnmounted(() => {
 }
 
 .tech-pill {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 600;
   padding: 3px 8px;
-  background: rgba(220, 215, 186, 0.08);
+  background: rgba(220, 215, 186, 0.06);
   color: var(--color-text-secondary);
-  border: 1px solid rgba(54, 54, 70, 0.7);
+  border: 1px solid var(--color-border);
   border-radius: 2px;
 }
 
-/* Responsive Layout with gsap.matchMedia mobile fallback */
+/* Responsive Mobile Layout */
 @media (max-width: 820px) {
   .timeline-spine-track {
     left: 20px;
@@ -595,13 +645,16 @@ onUnmounted(() => {
     min-height: auto;
     margin-bottom: 50px;
     justify-content: flex-start !important;
-    padding-left: 50px;
+    padding-left: 52px;
   }
 
-  .experience-card {
+  .exp-scroll-node {
     width: 100%;
     max-width: 100%;
-    padding: 22px;
+  }
+
+  .exp-tilt-card {
+    padding: 24px 20px;
   }
 }
 </style>

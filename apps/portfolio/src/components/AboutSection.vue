@@ -52,7 +52,7 @@ onMounted(() => {
         <div class="about-card side-info">
           <div class="info-item">
             <span class="info-label">Experiencia</span>
-            <span class="info-value">15+ años construyendo aplicaciones web</span>
+            <span class="info-value">8+ años construyendo software y aplicaciones web</span>
           </div>
 
           <div class="info-item" v-if="profile.location">

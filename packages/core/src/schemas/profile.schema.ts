@@ -14,7 +14,7 @@ export const profileSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters').max(200),
   bio: z.string()
     .min(10, 'Bio must be at least 10 characters')
-    .max(150, 'Bio must be maximum 150 characters (2 lines of 75 chars)'),
+    .max(500, 'Bio must be maximum 500 characters'),
   email: z.string().email('Invalid email address'),
   phone: z.string().optional(),
   whatsapp: z.string().optional(),

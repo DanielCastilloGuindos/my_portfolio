@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, nextTick, ref } from 'vue';
 import type { Profile, SocialLink } from '@portfolio/core';
 import type { Theme } from '../themes/index';
-import { truncateBio } from '../lib/format';
+import { setupMagnetic } from '../lib/magnetic';
 import PortfolioMeDrawing from './PortfolioMeDrawing.vue';
 
 const props = defineProps<{
@@ -13,12 +14,12 @@ const emit = defineEmits<{
   (e: 'cv-download'): void;
 }>();
 
+const rootEl = ref<HTMLElement | null>(null);
+let magneticCleanups: Array<() => void> = [];
+
 const socialLinks: SocialLink[] = (props.profile.socialLinks as SocialLink[] | undefined) ?? [];
 
 function openCv(): void {
-  if (props.profile.cvUrl) {
-    window.open(props.profile.cvUrl, '_blank', 'noopener,noreferrer');
-  }
   emit('cv-download');
 }
 
@@ -28,10 +29,24 @@ function openWhatsApp(): void {
   const clean = number.replace(/\s/g, '');
   window.open(`https://wa.me/${clean}`, '_blank', 'noopener,noreferrer');
 }
+
+onMounted(() => {
+  nextTick(() => {
+    const buttons = rootEl.value?.querySelectorAll<HTMLElement>('.btn') ?? [];
+    buttons.forEach((btn) => {
+      magneticCleanups.push(setupMagnetic(btn, { strength: 0.28, textStrength: 0.15 }));
+    });
+  });
+});
+
+onUnmounted(() => {
+  magneticCleanups.forEach((cleanup) => cleanup());
+  magneticCleanups = [];
+});
 </script>
 
 <template>
-  <section id="hero" class="hero" aria-labelledby="hero-title">
+  <section id="hero" ref="rootEl" class="hero" aria-labelledby="hero-title">
     <div class="hero-grid">
       <!-- Left: illustrated portrait from me.html -->
       <div class="monigote-col">
@@ -44,17 +59,18 @@ function openWhatsApp(): void {
         <h2 class="hero-title" :style="{ color: theme.cssVariables['--color-accent'] }">
           {{ profile.title }}
         </h2>
-        <p class="hero-bio">{{ truncateBio(profile.bio) }}</p>
+        <p class="hero-bio">{{ profile.bio }}</p>
 
         <div class="hero-actions">
           <a
             v-if="profile.cvUrl"
             :href="profile.cvUrl"
+            download="CV_Daniel_Castillo_2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
             @click="openCv"
-            class="btn btn-cv"
-            aria-label="Descargar CV"
+            class="btn btn-cv font-mono"
+            aria-label="Descargar CV de Daniel Castillo"
           >
             <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -70,7 +86,7 @@ function openWhatsApp(): void {
             target="_blank"
             rel="noopener noreferrer"
             @click="openWhatsApp"
-            class="btn btn-whatsapp"
+            class="btn btn-whatsapp font-mono"
             aria-label="Contactar por WhatsApp"
           >
             <svg class="btn-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -83,7 +99,7 @@ function openWhatsApp(): void {
           <button
             v-for="link in socialLinks"
             :key="link.id"
-            class="btn btn-social"
+            class="btn btn-social font-mono"
             :aria-label="`Perfil de ${link.platform}`"
             @click="window.open(link.url, '_blank', 'noopener,noreferrer')"
           >

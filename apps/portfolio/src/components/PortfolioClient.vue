@@ -237,12 +237,14 @@ onUnmounted(() => {
         :theme="theme"
       />
 
-      <!-- 3. Estudios -->
+      <!-- 3. Estudios (Oculto temporalmente) -->
+      <!--
       <AchievementFrame
         v-if="education.length"
         :education="education"
         :theme="theme"
       />
+      -->
 
       <!-- 4. Portfolio (Proyectos) -->
       <ProjectsSection

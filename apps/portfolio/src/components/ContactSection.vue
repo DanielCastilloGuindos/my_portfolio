@@ -79,43 +79,28 @@ async function submit(event: Event): Promise<void> {
   }
 
   status.value = 'submitting';
-  statusMessage.value = 'Enviando…';
+  statusMessage.value = 'Abriendo WhatsApp…';
 
-  const payload = {
-    name: form.value.name.trim(),
-    email: form.value.email.trim(),
-    message: form.value.message.trim(),
-  };
+  const rawPhone = whatsappToShow.value || phoneToShow.value || '+34 605 995 969';
+  const cleanPhone = rawPhone.replace(/\D/g, '');
 
-  try {
-    if (FORMSPREE_ENDPOINT) {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error('No se pudo enviar el mensaje.');
-    } else {
-      const to = props.contactInfo?.email || props.profile.email;
-      const subject = encodeURIComponent(`Nuevo mensaje de ${payload.name}`);
-      const body = encodeURIComponent(
-        `De: ${payload.name} <${payload.email}>\n\n${payload.message}`,
-      );
-      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-    }
+  const textLines = [
+    `¡Hola Dani! Te contacto desde tu portfolio danicastillo.es`,
+    `Nombre: ${form.value.name.trim()}`,
+    `Email: ${form.value.email.trim()}`,
+    `Mensaje: ${form.value.message.trim()}`,
+  ];
+  const messageText = textLines.join('\n\n');
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageText)}`;
 
-    status.value = 'success';
-    statusMessage.value = 'Mensaje enviado. Gracias.';
-    form.value = { name: '', email: '', message: '' };
-    errors.value = {};
-  } catch {
-    status.value = 'error';
-    statusMessage.value = 'No se pudo enviar. Intenta de nuevo.';
-  } finally {
-    if (status.value !== 'success') {
-      status.value = 'idle';
-    }
-  }
+  // Open WhatsApp directly in new window/tab
+  window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+  status.value = 'success';
+  statusMessage.value = 'Mensaje preparado. Se ha abierto WhatsApp para enviarlo.';
+  form.value = { name: '', email: '', message: '' };
+  errors.value = {};
+  status.value = 'idle';
 }
 </script>
 
