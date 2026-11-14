@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Mail, Phone, MapPin, Send } from 'lucide-vue-next';
+import { Mail, Linkedin, MapPin, Send } from 'lucide-vue-next';
 import type { Profile, ContactInfo } from '@portfolio/core';
 import type { Theme } from '../themes/index';
 import { prefersReducedMotion } from '../lib/format';
@@ -197,12 +197,6 @@ async function submit(event: Event): Promise<void> {
               <a :href="`mailto:${emailToShow}`">{{ emailToShow }}</a>
             </span>
           </li>
-          <li class="info-item" v-if="phoneToShow">
-            <span class="info-icon" title="Teléfono" aria-label="Teléfono">
-              <Phone :size="20" />
-            </span>
-            <span class="info-value">{{ phoneToShow }}</span>
-          </li>
           <li class="info-item" v-if="whatsappToShow">
             <span class="info-icon whatsapp-icon" title="WhatsApp" aria-label="WhatsApp">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -217,6 +211,19 @@ async function submit(event: Event): Promise<void> {
               class="info-value"
             >
               {{ whatsappToShow }}
+            </a>
+          </li>
+          <li class="info-item">
+            <span class="info-icon linkedin-icon" title="LinkedIn" aria-label="LinkedIn">
+              <Linkedin :size="18" />
+            </span>
+            <a
+              href="https://www.linkedin.com/in/dcastilloguindos"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="info-value"
+            >
+              linkedin.com/in/dcastilloguindos
             </a>
           </li>
           <li class="info-item" v-if="locationToShow">
@@ -437,6 +444,12 @@ async function submit(event: Event): Promise<void> {
   background: rgba(118, 148, 106, 0.12);
   color: #76946A;
   border-color: rgba(118, 148, 106, 0.25);
+}
+
+.info-icon.linkedin-icon {
+  background: rgba(10, 102, 194, 0.14);
+  color: #70b5f9;
+  border-color: rgba(10, 102, 194, 0.35);
 }
 
 .btn-icon {

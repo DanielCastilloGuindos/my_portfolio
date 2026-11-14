@@ -14,14 +14,35 @@
     "headerTitle": "Daniel Castillo Guindos",
     "headerLogoUrl": "",
     "navLinks": [
-      { "id": "link-1", "label": "Inicio", "url": "#hero" },
-      { "id": "link-2", "label": "Sobre mí", "url": "#about" },
-      { "id": "link-3", "label": "Experiencias", "url": "#experiencias" },
-      { "id": "link-5", "label": "Portfolio", "url": "#portfolio" },
-      { "id": "link-6", "label": "Contacto", "url": "#contacto" }
+      {
+        "id": "link-1",
+        "label": "Inicio",
+        "url": "#hero"
+      },
+      {
+        "id": "link-2",
+        "label": "Sobre mí",
+        "url": "#about"
+      },
+      {
+        "id": "link-5",
+        "label": "Proyectos",
+        "url": "#proyectos"
+      },
+      {
+        "id": "link-3",
+        "label": "Carrera profesional",
+        "url": "#carrera-profesional"
+      },
+      {
+        "id": "link-6",
+        "label": "Contacto",
+        "url": "#contacto"
+      }
     ],
     "createdAt": "2026-11-02T12:00:00.000Z",
-    "updatedAt": "2026-11-10T22:45:00.000Z"
+    "updatedAt": "2026-11-10T22:45:00.000Z",
+    "linkedin": "https://www.linkedin.com/in/dcastilloguindos"
   },
   "experiences": [
     {
@@ -40,8 +61,18 @@
         "Implementación de flujos críticos de alta concurrencia: autenticación, wallet digital, checkout, historial de pedidos y tracking.",
         "Cobertura rigurosa de pruebas unitarias con Vitest y observabilidad en producción con Kibana, Grafana y AppDynamics sobre Red Hat OpenShift."
       ],
-      "stack": ["Vue 3", "TypeScript", "Hexagonal Architecture", "Vitest", "OpenShift", "Kibana", "Grafana", "Pinia"],
+      "stack": [
+        "Vue 3",
+        "TypeScript",
+        "Hexagonal Architecture",
+        "Vitest",
+        "OpenShift",
+        "Kibana",
+        "Grafana",
+        "Pinia"
+      ],
       "location": "Madrid",
+      "companyUrl": "https://www.elcorteingles.es",
       "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
       "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
       "order": 1,
@@ -63,8 +94,18 @@
         "Auditoría técnica, refactorización y mitigación de vulnerabilidades de seguridad en plataforma e-learning con CodeIgniter.",
         "Desarrollo e integración de módulos y arquitecturas web modernas con Laravel, Vue.js y bases de datos relacionales."
       ],
-      "stack": ["Vue.js", "Laravel", "PHP", "CodeIgniter", "MySQL", "Scrum", "REST APIs", "Git"],
+      "stack": [
+        "Vue.js",
+        "Laravel",
+        "PHP",
+        "CodeIgniter",
+        "MySQL",
+        "Scrum",
+        "REST APIs",
+        "Git"
+      ],
       "location": "Madrid",
+      "companyUrl": "https://epamneoris.com/",
       "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
       "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
       "order": 2,
@@ -86,33 +127,49 @@
         "Desarrollo de aplicaciones web internas con Node.js y JavaScript para acelerar y simplificar flujos operativos.",
         "Mantenimiento continuo y soporte de sistemas de control de accesos de seguridad aeroportuaria."
       ],
-      "stack": ["JavaScript", "Node.js", "Handlebars", "Redes & Seguridad", "Firebase", "SysAdmin"],
+      "stack": [
+        "JavaScript",
+        "Node.js",
+        "Handlebars",
+        "Redes & Seguridad",
+        "Firebase",
+        "SysAdmin"
+      ],
       "location": "Madrid",
-      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "companyUrl": "https://www.i-sec.com/es",
+      "backgroundVideoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4",
+      "videoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4",
       "order": 3,
       "isExtra": false
     },
     {
-      "id": "exp-esf",
+      "id": "exp-exceltic",
       "profileId": "default",
-      "company": "Economistas Sin Fronteras",
-      "role": "Desarrollador Full Stack",
-      "position": "Desarrollador Full Stack",
-      "period": "Jun 2021 – Dic 2021",
-      "startDate": "2021-06-01T00:00:00.000Z",
-      "endDate": "2021-12-31T00:00:00.000Z",
+      "company": "Exceltic",
+      "role": "Programador Frontend en Prácticas",
+      "position": "Programador Frontend en Prácticas",
+      "period": "Oct 2020 – Dic 2020",
+      "startDate": "2020-10-01T00:00:00.000Z",
+      "endDate": "2020-12-31T00:00:00.000Z",
       "current": false,
-      "description": "Diseño y desarrollo end-to-end de aplicación web formativa inclusiva.",
+      "description": "Mantenimiento de una aplicación web en PHP con Smarty, MySQL y Mustache dando soporte a una aplicación ferroviaria.",
       "highlights": [
-        "Desarrollo completo de 'Banco Econos', plataforma interactiva de formación financiera adaptada para personas mayores.",
-        "Diseño inclusivo con accesibilidad WCAG, componentes visuales de alto contraste y retroalimentación didáctica clara.",
-        "Simulador guiado de operativas bancarias cotidianas para combatir la brecha digital en banca."
+        "Programador frontal en prácticas dando mantenimiento correctivo y evolutivo a aplicación web en PHP con Smarty, MySQL y Mustache.",
+        "Soporte técnico continuo y desarrollo de componentes para operativa y control de infraestructura ferroviaria.",
+        "Optimización de consultas a bases de datos relacionales y renderizado dinámico de vistas."
       ],
-      "stack": ["JavaScript", "HTML5 / Sass", "PHP", "Interactive UX", "WCAG Accessibility"],
-      "location": "Remoto",
-      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
-      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "stack": [
+        "PHP",
+        "Smarty",
+        "Mustache",
+        "MySQL",
+        "JavaScript",
+        "HTML5 / CSS3"
+      ],
+      "location": "Madrid",
+      "companyUrl": "https://exceltic.com/",
+      "backgroundVideoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-hereweare.mp4",
+      "videoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-hereweare.mp4",
       "order": 4,
       "isExtra": false
     }
@@ -145,29 +202,6 @@
   ],
   "projects": [
     {
-      "id": "proj-opengym",
-      "profileId": "default",
-      "title": "openGym",
-      "name": "openGym",
-      "type": "web",
-      "summary": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
-      "description": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
-      "features": [
-        "Gestión de rutinas de ejercicio personalizadas y registro de actividad",
-        "Temporizador y seguimiento interactivo de descansos y repeticiones",
-        "Despliegue y optimización en Render con tiempos de respuesta ágiles"
-      ],
-      "stack": ["JavaScript", "HTML5", "CSS3", "Web App", "Render"],
-      "tags": ["JavaScript", "Fitness", "Web App", "Render"],
-      "previewImageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
-      "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
-      "liveUrl": "https://opengym-web-8jf2.onrender.com/",
-      "url": "https://opengym-web-8jf2.onrender.com/",
-      "repoUrl": "https://github.com/dannycastle",
-      "featured": true,
-      "createdAt": "2026-08-01T00:00:00.000Z"
-    },
-    {
       "id": "proj-myhome",
       "profileId": "default",
       "title": "MyHome · Portal Inmobiliario",
@@ -180,8 +214,19 @@
         "Filtros de búsqueda avanzada por precio, subasta, ubicación y estado",
         "Arquitectura construida en Astro v7 con rendimiento extremo y SEO estructurado"
       ],
-      "stack": ["Astro", "TypeScript", "Tailwind CSS", "Vercel", "Web Scraping"],
-      "tags": ["Astro", "TypeScript", "Real Estate", "Vercel"],
+      "stack": [
+        "Astro",
+        "TypeScript",
+        "Tailwind CSS",
+        "Vercel",
+        "Web Scraping"
+      ],
+      "tags": [
+        "Astro",
+        "TypeScript",
+        "Real Estate",
+        "Vercel"
+      ],
       "previewImageUrl": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
       "imageUrl": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
       "liveUrl": "https://my-home-portal.vercel.app/",
@@ -189,6 +234,40 @@
       "repoUrl": "https://github.com/dannycastle",
       "featured": true,
       "createdAt": "2026-07-15T00:00:00.000Z"
+    },
+    {
+      "id": "proj-opengym",
+      "profileId": "default",
+      "title": "openGym",
+      "name": "openGym",
+      "type": "web",
+      "summary": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
+      "description": "Aplicación web interactiva para rutinas y seguimiento de entrenamientos físicos, desarrollada a partir de un fork optimizado para ejercitarnos con fluidez.",
+      "features": [
+        "Gestión de rutinas de ejercicio personalizadas y registro de actividad",
+        "Temporizador y seguimiento interactivo de descansos y repeticiones",
+        "Despliegue y optimización en Render con tiempos de respuesta ágiles"
+      ],
+      "stack": [
+        "JavaScript",
+        "HTML5",
+        "CSS3",
+        "Web App",
+        "Render"
+      ],
+      "tags": [
+        "JavaScript",
+        "Fitness",
+        "Web App",
+        "Render"
+      ],
+      "previewImageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://opengym-web-8jf2.onrender.com/",
+      "url": "https://opengym-web-8jf2.onrender.com/",
+      "repoUrl": "https://github.com/dannycastle",
+      "featured": true,
+      "createdAt": "2026-08-01T00:00:00.000Z"
     },
     {
       "id": "proj-areadirecta",
@@ -203,8 +282,19 @@
         "Calculadora de financiación integrada y solicitud rápida de cita",
         "Optimización de embudo de ventas y conversión directa de leads comerciales"
       ],
-      "stack": ["JavaScript", "HTML5", "CSS3 / Sass", "Responsive Design", "SEO"],
-      "tags": ["Automoción", "E-Commerce", "JavaScript", "Financiación"],
+      "stack": [
+        "JavaScript",
+        "HTML5",
+        "CSS3 / Sass",
+        "Responsive Design",
+        "SEO"
+      ],
+      "tags": [
+        "Automoción",
+        "E-Commerce",
+        "JavaScript",
+        "Financiación"
+      ],
       "previewImageUrl": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
       "imageUrl": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
       "liveUrl": "https://areadirecta.es/",
@@ -226,8 +316,19 @@
         "Formulario interactivo de solicitud de presupuestos directos sin intermediarios",
         "Estructura orientada a posicionamiento orgánico local en Google"
       ],
-      "stack": ["Astro", "JavaScript", "CSS3", "Local SEO", "Lead Gen"],
-      "tags": ["Astro", "Landing Page", "SEO", "Responsive"],
+      "stack": [
+        "Astro",
+        "JavaScript",
+        "CSS3",
+        "Local SEO",
+        "Lead Gen"
+      ],
+      "tags": [
+        "Astro",
+        "Landing Page",
+        "SEO",
+        "Responsive"
+      ],
       "previewImageUrl": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
       "imageUrl": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
       "liveUrl": "https://toldoperfil.es/",
@@ -249,8 +350,19 @@
         "Reducción sustancial del First Contentful Paint (FCP) y Largest Contentful Paint (LCP)",
         "Despliegue ágil en Vercel con evaluación continua de rendimiento"
       ],
-      "stack": ["JavaScript", "Web Performance", "Lighthouse", "CSS3", "Vercel"],
-      "tags": ["Web Performance", "Optimization", "Lighthouse", "Vercel"],
+      "stack": [
+        "JavaScript",
+        "Web Performance",
+        "Lighthouse",
+        "CSS3",
+        "Vercel"
+      ],
+      "tags": [
+        "Web Performance",
+        "Optimization",
+        "Lighthouse",
+        "Vercel"
+      ],
       "previewImageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
       "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
       "liveUrl": "https://arte19.vercel.app/",
@@ -272,8 +384,20 @@
         "Simulador guiado de cajeros automáticos y operativa bancaria electrónica",
         "Módulos didácticos gamificados con feedback visual inmediato"
       ],
-      "stack": ["JavaScript", "HTML5", "CSS3 / Sass", "Responsive Design", "A11y"],
-      "tags": ["JavaScript", "HTML5", "A11y", "Educación", "Inclusión"],
+      "stack": [
+        "JavaScript",
+        "HTML5",
+        "CSS3 / Sass",
+        "Responsive Design",
+        "A11y"
+      ],
+      "tags": [
+        "JavaScript",
+        "HTML5",
+        "A11y",
+        "Educación",
+        "Inclusión"
+      ],
       "previewImageUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
       "imageUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
       "liveUrl": "https://www.bancoeconos.org/",
@@ -284,24 +408,73 @@
     }
   ],
   "skills": [
-    { "id": "sk-1", "profileId": "default", "name": "Vue 3 (Composition API)", "category": "Frontend", "level": 5 },
-    { "id": "sk-2", "profileId": "default", "name": "TypeScript", "category": "Frontend", "level": 5 },
-    { "id": "sk-3", "profileId": "default", "name": "Node.js", "category": "Backend", "level": 4 },
-    { "id": "sk-4", "profileId": "default", "name": "PHP (Laravel / CodeIgniter)", "category": "Backend", "level": 4 },
-    { "id": "sk-5", "profileId": "default", "name": "Arquitectura Hexagonal & Clean", "category": "Arquitectura", "level": 5 },
-    { "id": "sk-6", "profileId": "default", "name": "Kibana, Grafana & AppDynamics", "category": "DevOps", "level": 4 },
-    { "id": "sk-7", "profileId": "default", "name": "Trabajo en equipo & Agile", "category": "Metodología", "level": 5 }
+    {
+      "id": "sk-1",
+      "profileId": "default",
+      "name": "Vue 3 (Composition API)",
+      "category": "Frontend",
+      "level": 5
+    },
+    {
+      "id": "sk-2",
+      "profileId": "default",
+      "name": "TypeScript",
+      "category": "Frontend",
+      "level": 5
+    },
+    {
+      "id": "sk-3",
+      "profileId": "default",
+      "name": "Node.js",
+      "category": "Backend",
+      "level": 4
+    },
+    {
+      "id": "sk-4",
+      "profileId": "default",
+      "name": "PHP (Laravel / CodeIgniter)",
+      "category": "Backend",
+      "level": 4
+    },
+    {
+      "id": "sk-5",
+      "profileId": "default",
+      "name": "Arquitectura Hexagonal & Clean",
+      "category": "Arquitectura",
+      "level": 5
+    },
+    {
+      "id": "sk-6",
+      "profileId": "default",
+      "name": "Kibana, Grafana & AppDynamics",
+      "category": "DevOps",
+      "level": 4
+    },
+    {
+      "id": "sk-7",
+      "profileId": "default",
+      "name": "Trabajo en equipo & Agile",
+      "category": "Metodología",
+      "level": 5
+    }
   ],
   "socialLinks": [
     {
-      "id": "social-1",
+      "id": "social-linkedin",
+      "profileId": "default",
+      "platform": "LinkedIn",
+      "url": "https://www.linkedin.com/in/dcastilloguindos",
+      "username": "dcastilloguindos"
+    },
+    {
+      "id": "social-github",
       "profileId": "default",
       "platform": "GitHub",
       "url": "https://github.com/dannycastle",
       "username": "dannycastle"
     },
     {
-      "id": "social-2",
+      "id": "social-web",
       "profileId": "default",
       "platform": "Web",
       "url": "https://danicastillo.es",

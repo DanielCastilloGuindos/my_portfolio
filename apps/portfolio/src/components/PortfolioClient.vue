@@ -53,6 +53,7 @@ function applyPortfolioData(data: Record<string, any>): void {
     stack: Array.isArray(e.stack) ? e.stack : [],
     backgroundVideoUrl: e.backgroundVideoUrl ?? e.videoUrl ?? '',
     videoUrl: e.videoUrl ?? e.backgroundVideoUrl ?? '',
+    companyUrl: e.companyUrl ?? e.websiteUrl ?? '',
     startDate: e.startDate ? new Date(e.startDate) : new Date(),
     endDate: e.endDate ? new Date(e.endDate) : undefined,
   })).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -211,10 +212,11 @@ onUnmounted(() => {
     <HeaderNav
       :title="profile?.headerTitle || profile?.name"
       :logo-url="profile?.headerLogoUrl"
+      :cv-url="profile?.cvUrl"
       :custom-links="navLinks"
     />
 
-    <!-- Main landmark containing all sections -->
+    <!-- Main landmark containing all sections in requested order -->
     <main id="main">
       <!-- 1. Hero: Greeting + Drawing + Direct Actions -->
       <HeroSection
@@ -223,21 +225,27 @@ onUnmounted(() => {
         :theme="theme"
       />
 
-      <!-- 1.1 Sobre mí (About Me) -->
+      <!-- 2. Sobre mí (About Me) -->
       <AboutSection
         v-if="profile"
         :profile="profile"
         :theme="theme"
       />
 
-      <!-- 2. Experiencias -->
+      <!-- 3. Proyectos (Anteriormente Portfolio) -->
+      <ProjectsSection
+        :projects="projects"
+        :theme="theme"
+      />
+
+      <!-- 4. Carrera profesional (Anteriormente Experiencia laboral) -->
       <TimelineExperience
         v-if="experiences.length"
         :experiences="experiences"
         :theme="theme"
       />
 
-      <!-- 3. Estudios (Oculto temporalmente) -->
+      <!-- 5. Carrera estudiantil (Oculto temporalmente) -->
       <!--
       <AchievementFrame
         v-if="education.length"
@@ -246,13 +254,7 @@ onUnmounted(() => {
       />
       -->
 
-      <!-- 4. Portfolio (Proyectos) -->
-      <ProjectsSection
-        :projects="projects"
-        :theme="theme"
-      />
-
-      <!-- 5. Contacto -->
+      <!-- 6. Contacto -->
       <ContactSection
         :contact-info="contactInfo"
         :profile="profile ?? ({} as Profile)"
@@ -260,8 +262,13 @@ onUnmounted(() => {
       />
     </main>
 
-    <!-- Footer -->
-    <FooterNav :projects="projects" :theme="theme" />
+    <!-- Footer with Doctor Who TARDIS Time Machine Easter Egg & Social Links -->
+    <FooterNav
+      :projects="projects"
+      :theme="theme"
+      :profile="profile"
+      :social-links="socialLinks"
+    />
   </div>
 </template>
 

@@ -318,17 +318,18 @@ onUnmounted(() => {
 
 <template>
   <section
-    id="portfolio"
+    id="proyectos"
     ref="rootEl"
     class="portfolio-section"
     aria-labelledby="portfolio-heading"
   >
+    <div id="portfolio" style="position: absolute; top: 0;" aria-hidden="true"></div>
     <div ref="pinContainerEl" class="pin-viewport">
       <!-- Section Top Bar: Title & Status -->
       <header class="section-top-bar">
         <div class="top-title-group">
-          <span class="section-mono-tag font-mono">// 03. APPLICATION SHOWCASE</span>
-          <h2 id="portfolio-heading" class="section-title">Portfolio de Proyectos</h2>
+          <span class="section-mono-tag font-mono">// 02. PROYECTOS DESTACADOS</span>
+          <h2 id="portfolio-heading" class="section-title">Proyectos</h2>
         </div>
 
         <!-- Filter Selector (Visible if multiple categories exist) -->

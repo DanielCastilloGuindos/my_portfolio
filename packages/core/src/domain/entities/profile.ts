@@ -36,6 +36,7 @@ export interface WorkExperience {
   stack: string[];
   backgroundVideoUrl?: string;
   location?: string;
+  companyUrl?: string;
   profileId?: string;
   order?: number;
   isExtra?: boolean;
@@ -67,6 +68,7 @@ export interface Experience {
   current?: boolean;
   description?: string;
   location?: string;
+  companyUrl?: string;
   videoUrl?: string;
   backgroundVideoUrl?: string;
   highlights?: string[];

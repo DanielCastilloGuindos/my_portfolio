@@ -220,11 +220,12 @@ onUnmounted(() => {
 
 <template>
   <section
-    id="experiencias"
+    id="carrera-profesional"
     ref="rootEl"
     class="experience-section portfolio-section"
     aria-labelledby="experience-heading"
   >
+    <div id="experiencias" style="position: absolute; top: 0;" aria-hidden="true"></div>
     <!-- Pinned Background Video Container with Dual-Layer Lerp Scrubber -->
     <div class="video-background-pinned" aria-hidden="true">
       <video
@@ -247,8 +248,8 @@ onUnmounted(() => {
 
     <div class="container">
       <header class="section-header">
-        <span class="section-mono-tag font-mono">// 02. CAREER TRAJECTORY</span>
-        <h2 id="experience-heading" class="section-title">Experiencia Laboral</h2>
+        <span class="section-mono-tag font-mono">// 03. TRAYECTORIA LABORAL</span>
+        <h2 id="experience-heading" class="section-title">Carrera Profesional</h2>
         <p class="section-subtitle">Ingeniería frontend, arquitectura hexagonal y observabilidad en producción</p>
       </header>
 
@@ -273,12 +274,21 @@ onUnmounted(() => {
 
           <!-- LAYER 1: Scroll-driven Outer Wrapper (Strictly ScrollTrigger: y & autoAlpha) -->
           <div class="exp-scroll-node">
-            <!-- LAYER 2: Inner Tilt Card (Isolated for Tilt 3D: rotateX/rotateY) -->
-            <article class="exp-tilt-card">
+            <!-- LAYER 2: Inner Tilt Card (Isolated for Tilt 3D: rotateX/rotateY, Clickable) -->
+            <a
+              :href="exp.companyUrl || '#'"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="exp-tilt-card clickable-card"
+              :aria-label="`Visitar sitio web oficial de ${exp.company}`"
+            >
               <!-- Technical Index & Period Tag -->
               <div class="card-meta-top font-mono">
                 <span class="exp-index">// 0{{ index + 1 }}</span>
-                <span class="period-badge">{{ exp.period || '2021 – Presente' }}</span>
+                <div class="meta-right">
+                  <span class="company-link-hint">Visitar web ↗</span>
+                  <span class="period-badge">{{ exp.period || '2021 – Presente' }}</span>
+                </div>
               </div>
 
               <!-- Header: Role & Company -->
@@ -306,7 +316,7 @@ onUnmounted(() => {
                   {{ tech }}
                 </span>
               </div>
-            </article>
+            </a>
           </div>
         </div>
       </div>
@@ -324,10 +334,12 @@ onUnmounted(() => {
 
 .container {
   position: relative;
-  max-width: 1200px;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
   z-index: 2;
+  box-sizing: border-box;
 }
 
 .section-header {
@@ -404,7 +416,8 @@ onUnmounted(() => {
 /* Timeline Layout */
 .timeline-wrapper {
   position: relative;
-  max-width: 1080px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   padding: 20px 0 60px;
 }
@@ -492,8 +505,8 @@ onUnmounted(() => {
 /* Layer 1: Outer Scroll Node (Handled ONLY by GSAP ScrollTrigger) */
 .exp-scroll-node {
   position: relative;
-  width: 45%;
-  max-width: 480px;
+  width: 47%;
+  max-width: 600px;
   perspective: 1000px;
   z-index: 2;
   will-change: transform, opacity;
@@ -508,7 +521,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md, 2px);
-  padding: 32px 30px;
+  padding: 34px 32px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
   box-sizing: border-box;
   transform-style: preserve-3d;
@@ -516,9 +529,35 @@ onUnmounted(() => {
   will-change: transform;
 }
 
+.clickable-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .exp-tilt-card:hover {
   border-color: var(--color-border-hover);
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+
+.meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.company-link-hint {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.clickable-card:hover .company-link-hint {
+  opacity: 1;
+  transform: translateX(3px);
 }
 
 /* Card Metadata Header */
@@ -632,6 +671,10 @@ onUnmounted(() => {
 
 /* Responsive Mobile Layout */
 @media (max-width: 820px) {
+  .container {
+    padding: 0 16px;
+  }
+
   .timeline-spine-track {
     left: 20px;
     transform: none;
