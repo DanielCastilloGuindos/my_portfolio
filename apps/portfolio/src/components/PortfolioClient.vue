@@ -90,7 +90,18 @@ function applyPortfolioData(data: Record<string, any>): void {
 
 async function loadPortfolio(): Promise<void> {
   try {
-    // 1. Check for local storage updates from apps/manager first
+    // 1. Fetch the canonical data from json first with cache busting
+    let serverData: Record<string, any> | null = null;
+    try {
+      const response = await fetch(`${STATIC_PATH}?t=${Date.now()}`);
+      if (response.ok) {
+        serverData = (await response.json()) as Record<string, any>;
+      }
+    } catch {
+      // Server fetch failed, use localData fallback
+    }
+
+    // 2. Check for local storage only as an offline fallback
     let localData: Record<string, any> | null = null;
     try {
       const stored = localStorage.getItem('portfolio-manager-draft') || localStorage.getItem('portfolio_data');
@@ -101,18 +112,21 @@ async function loadPortfolio(): Promise<void> {
       // Local storage may be restricted or empty
     }
 
-    // 2. Fetch the base data from json
-    let serverData: Record<string, any> | null = null;
-    try {
-      const response = await fetch(STATIC_PATH);
-      if (response.ok) {
-        serverData = (await response.json()) as Record<string, any>;
+    // Canonical priority: if serverData is available, prefer it unless local draft is strictly newer
+    let merged = serverData || localData;
+    if (serverData && localData) {
+      const serverTime = serverData.profile?.updatedAt ? new Date(serverData.profile.updatedAt).getTime() : 0;
+      const localTime = localData.profile?.updatedAt ? new Date(localData.profile.updatedAt).getTime() : 0;
+      if (localTime > serverTime) {
+        merged = localData;
+      } else {
+        merged = serverData;
+        try {
+          localStorage.setItem('portfolio-manager-draft', JSON.stringify(serverData));
+        } catch {}
       }
-    } catch {
-      // Server fetch failed, use localData if available
     }
 
-    const merged = localData || serverData;
     if (!merged) {
       throw new Error('No se pudieron cargar los datos del portfolio.');
     }

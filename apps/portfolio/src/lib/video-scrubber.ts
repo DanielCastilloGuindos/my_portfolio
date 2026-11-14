@@ -1,6 +1,6 @@
 // apps/portfolio/src/lib/video-scrubber.ts
-// Robust video scrubbing controller using numeric proxy lerp inside gsap.ticker.
-// Avoids requestVideoFrameCallback stalls on paused video and ensures non-blocking seeking.
+// Multi-buffer video controller for timeline experiences.
+// Pre-binds all video elements to prevent network stalls and .src swapping during scroll.
 
 import gsap from 'gsap';
 
@@ -10,131 +10,143 @@ export interface VideoScrubberOptions {
 }
 
 export class VideoScrubController {
-  private videoA: HTMLVideoElement | null = null;
-  private videoB: HTMLVideoElement | null = null;
-  private activeSlot: 'A' | 'B' = 'A';
-  private activeUrl: string | null = null;
-
-  private targetTime: number = 0;
-  private smoothedTime: number = 0;
+  private videos: HTMLVideoElement[] = [];
+  private activeIndex: number = -1;
+  private targetTimes: number[] = [];
+  private smoothedTimes: number[] = [];
   private readonly lerpFactor: number;
   private readonly crossfadeDuration: number;
   private tickerFn: (() => void) | null = null;
 
   constructor(options?: VideoScrubberOptions) {
-    this.lerpFactor = options?.lerpFactor ?? 0.14;
+    this.lerpFactor = options?.lerpFactor ?? 0.16;
     this.crossfadeDuration = options?.crossfadeDuration ?? 0.65;
     this.initTicker();
   }
 
   /**
-   * Binds the dual-buffer video elements
+   * Binds preloaded video elements and primes their decoders with the first frame
    */
-  public bindVideos(a: HTMLVideoElement | null, b: HTMLVideoElement | null): void {
-    this.videoA = a;
-    this.videoB = b;
-    if (this.videoA) {
-      this.videoA.muted = true;
-      this.videoA.playsInline = true;
-      this.videoA.preload = 'auto';
-    }
-    if (this.videoB) {
-      this.videoB.muted = true;
-      this.videoB.playsInline = true;
-      this.videoB.preload = 'auto';
-    }
-  }
+  public bindVideos(elements: (HTMLVideoElement | null)[]): void {
+    this.videos = elements.filter((v): v is HTMLVideoElement => v !== null);
+    this.targetTimes = new Array(this.videos.length).fill(0);
+    this.smoothedTimes = new Array(this.videos.length).fill(0);
 
-  private getActiveVideo(): HTMLVideoElement | null {
-    return this.activeSlot === 'A' ? this.videoA : this.videoB;
-  }
+    this.videos.forEach((video) => {
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      video.pause();
 
-  private getInactiveVideo(): HTMLVideoElement | null {
-    return this.activeSlot === 'A' ? this.videoB : this.videoA;
+      const primeVideo = () => {
+        if (!isNaN(video.duration) && video.duration > 0 && video.currentTime === 0) {
+          try {
+            video.currentTime = 0.05;
+          } catch {}
+        }
+      };
+
+      if (video.readyState >= 1) {
+        primeVideo();
+      } else {
+        video.addEventListener('loadedmetadata', primeVideo, { once: true });
+      }
+
+      try {
+        video.load();
+      } catch {}
+    });
   }
 
   /**
-   * Smoothly crossfades between video buffers when changing active experience
+   * Crossfades to active video by index.
+   * In desktop scroll mode, videos remain paused and scrub via ticker.
+   * In mobile mode ({ play: true }), the active video plays natively.
    */
-  public switchVideo(url?: string): void {
-    if (!url) {
-      if (this.videoA) gsap.to(this.videoA, { autoAlpha: 0, duration: this.crossfadeDuration, overwrite: 'auto' });
-      if (this.videoB) gsap.to(this.videoB, { autoAlpha: 0, duration: this.crossfadeDuration, overwrite: 'auto' });
-      this.activeUrl = null;
+  public switchIndex(index: number, options?: { play?: boolean }): void {
+    if (index < 0 || index >= this.videos.length) return;
+    if (this.activeIndex === index) {
+      if (options?.play && this.videos[index] && this.videos[index].paused) {
+        this.videos[index].play().catch(() => {});
+      }
       return;
     }
 
-    if (this.activeUrl === url) {
-      return;
-    }
+    this.activeIndex = index;
 
-    const incomingSlot = this.activeSlot === 'A' ? 'B' : 'A';
-    const incomingVideo = incomingSlot === 'A' ? this.videoA : this.videoB;
-    const outgoingVideo = this.activeSlot === 'A' ? this.videoA : this.videoB;
-
-    if (!incomingVideo) return;
-
-    this.activeUrl = url;
-    this.activeSlot = incomingSlot;
-
-    incomingVideo.src = url;
-    incomingVideo.load();
-
-    const onReady = () => {
-      incomingVideo.removeEventListener('loadedmetadata', onReady);
-      incomingVideo.pause();
-      incomingVideo.currentTime = this.smoothedTime;
-
-      // Crossfade using GPU-accelerated autoAlpha
-      gsap.to(incomingVideo, {
-        autoAlpha: 0.42,
-        duration: this.crossfadeDuration,
-        ease: 'power2.inOut',
-        overwrite: 'auto',
-      });
-
-      if (outgoingVideo) {
-        gsap.to(outgoingVideo, {
+    this.videos.forEach((video, i) => {
+      if (i === index) {
+        if (options?.play) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+        gsap.to(video, {
+          autoAlpha: 0.45,
+          duration: this.crossfadeDuration,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+        });
+      } else {
+        video.pause();
+        gsap.to(video, {
           autoAlpha: 0,
           duration: this.crossfadeDuration,
           ease: 'power2.inOut',
           overwrite: 'auto',
         });
       }
-    };
-
-    if (incomingVideo.readyState >= 1) {
-      onReady();
-    } else {
-      incomingVideo.addEventListener('loadedmetadata', onReady, { once: true });
-    }
+    });
   }
 
   /**
-   * Updates target time according to scroll progress (0 to 1)
+   * Updates target time for active video according to milestone scroll progress
    */
-  public setProgress(progress: number): void {
-    const video = this.getActiveVideo();
+  public setProgress(index: number, progress: number): void {
+    if (index < 0 || index >= this.videos.length) return;
+    const video = this.videos[index];
     if (!video || isNaN(video.duration) || video.duration <= 0) return;
-    this.targetTime = Math.max(0, Math.min(video.duration, progress * video.duration));
+
+    this.targetTimes[index] = Math.max(0, Math.min(video.duration, progress * video.duration));
+  }
+
+  public playActive(): void {
+    if (this.activeIndex >= 0 && this.videos[this.activeIndex]) {
+      this.videos[this.activeIndex].play().catch(() => {});
+    }
+  }
+
+  public pauseAll(): void {
+    this.videos.forEach((v) => v.pause());
+  }
+
+  public getActiveIndex(): number {
+    return this.activeIndex;
   }
 
   /**
    * Numeric proxy lerp loop running in gsap.ticker.
-   * Only mutates currentTime when video is NOT seeking and readyState >= 2 (HAVE_CURRENT_DATA)
+   * Only scrubs currentTime when video is paused (desktop scrub mode).
    */
   private initTicker(): void {
     this.tickerFn = () => {
-      const video = this.getActiveVideo();
+      if (this.activeIndex < 0 || !this.videos[this.activeIndex]) return;
+
+      const i = this.activeIndex;
+      const video = this.videos[i];
       if (!video || isNaN(video.duration) || video.duration <= 0) return;
 
-      // Numeric lerp interpolation
-      this.smoothedTime += (this.targetTime - this.smoothedTime) * this.lerpFactor;
+      // When video is playing natively, let browser clock handle frames
+      if (!video.paused) return;
 
-      const delta = Math.abs(video.currentTime - this.smoothedTime);
-      // Only seek if difference is noticeable (> 0.01s) and video pipeline is ready
-      if (delta > 0.01 && !video.seeking && video.readyState >= 2) {
-        video.currentTime = this.smoothedTime;
+      const target = this.targetTimes[i] ?? 0;
+      let smoothed = this.smoothedTimes[i] ?? 0;
+      smoothed += (target - smoothed) * this.lerpFactor;
+      this.smoothedTimes[i] = smoothed;
+
+      const delta = Math.abs(video.currentTime - smoothed);
+      if (delta > 0.02 && !video.seeking && video.readyState >= 2) {
+        video.currentTime = smoothed;
       }
     };
 
@@ -149,16 +161,10 @@ export class VideoScrubController {
       gsap.ticker.remove(this.tickerFn);
       this.tickerFn = null;
     }
-    if (this.videoA) {
-      this.videoA.pause();
-      this.videoA.src = '';
-    }
-    if (this.videoB) {
-      this.videoB.pause();
-      this.videoB.src = '';
-    }
-    this.videoA = null;
-    this.videoB = null;
-    this.activeUrl = null;
+    this.videos.forEach((v) => {
+      v.pause();
+    });
+    this.videos = [];
+    this.activeIndex = -1;
   }
 }

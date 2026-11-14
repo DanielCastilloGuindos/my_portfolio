@@ -20,9 +20,6 @@ const rootEl = ref<HTMLElement | null>(null);
 const timelineWrapperEl = ref<HTMLElement | null>(null);
 const spineProgressEl = ref<HTMLElement | null>(null);
 
-const videoA = ref<HTMLVideoElement | null>(null);
-const videoB = ref<HTMLVideoElement | null>(null);
-
 let ctx: gsap.Context | null = null;
 let mm: gsap.MatchMedia | null = null;
 let videoScrubber: VideoScrubController | null = null;
@@ -79,12 +76,14 @@ function setup3DTiltCards(): void {
 function initTimeline(): void {
   if (!rootEl.value || !timelineWrapperEl.value) return;
 
-  // Initialize lerp-based video scrubber with dual buffer
+  const videoElements = rootEl.value.querySelectorAll<HTMLVideoElement>('.bg-video');
+
+  // Initialize lerp-based video scrubber with pre-bound video elements
   videoScrubber = new VideoScrubController({
-    lerpFactor: 0.14,
+    lerpFactor: 0.16,
     crossfadeDuration: 0.65,
   });
-  videoScrubber.bindVideos(videoA.value, videoB.value);
+  videoScrubber.bindVideos(Array.from(videoElements));
 
   ctx = gsap.context(() => {
     // 1. Overall timeline vertical spine progress drawing (scaleY from top center)
@@ -115,8 +114,6 @@ function initTimeline(): void {
       milestones.forEach((milestone, index) => {
         const scrollNode = milestone.querySelector<HTMLElement>('.exp-scroll-node');
         const node = milestone.querySelector<HTMLElement>('.spine-node');
-        const exp = props.experiences[index];
-        const videoSrc = exp?.backgroundVideoUrl || exp?.videoUrl;
 
         if (!scrollNode) return;
 
@@ -129,14 +126,19 @@ function initTimeline(): void {
             end: 'bottom 15%',
             scrub: 1,
             onEnter: () => {
-              videoScrubber?.switchVideo(videoSrc);
+              videoScrubber?.switchIndex(index);
             },
             onEnterBack: () => {
-              videoScrubber?.switchVideo(videoSrc);
+              videoScrubber?.switchIndex(index);
+            },
+            onRefresh: (self) => {
+              if (self.isActive) {
+                videoScrubber?.switchIndex(index);
+              }
             },
             onUpdate: (self) => {
-              if (self.isActive && videoSrc) {
-                videoScrubber?.setProgress(self.progress);
+              if (self.isActive) {
+                videoScrubber?.setProgress(index, self.progress);
               }
             },
           },
@@ -181,8 +183,6 @@ function initTimeline(): void {
       milestones.forEach((milestone, index) => {
         const scrollNode = milestone.querySelector<HTMLElement>('.exp-scroll-node');
         const node = milestone.querySelector<HTMLElement>('.spine-node');
-        const exp = props.experiences[index];
-        const videoSrc = exp?.backgroundVideoUrl || exp?.videoUrl;
 
         if (!scrollNode) return;
 
@@ -197,12 +197,18 @@ function initTimeline(): void {
             scrollTrigger: {
               trigger: milestone,
               start: 'top 85%',
+              end: 'bottom 15%',
               toggleActions: 'play none none none',
               onEnter: () => {
-                videoScrubber?.switchVideo(videoSrc);
+                videoScrubber?.switchIndex(index, { play: true });
               },
               onEnterBack: () => {
-                videoScrubber?.switchVideo(videoSrc);
+                videoScrubber?.switchIndex(index, { play: true });
+              },
+              onRefresh: (self) => {
+                if (self.isActive) {
+                  videoScrubber?.switchIndex(index, { play: true });
+                }
               },
             },
           },
@@ -272,21 +278,17 @@ onUnmounted(() => {
     aria-labelledby="experience-heading"
   >
     <div id="experiencias" style="position: absolute; top: 0;" aria-hidden="true"></div>
-    <!-- Pinned Background Video Container with Dual-Layer Lerp Scrubber -->
+    <!-- Pinned Background Video Container with Dedicated Multi-Buffer Scrubber -->
     <div class="video-background-pinned" aria-hidden="true">
       <video
-        ref="videoA"
-        class="bg-video layer-a"
+        v-for="(exp, index) in experiences"
+        :key="exp.id || index"
+        :src="exp.backgroundVideoUrl || exp.videoUrl"
+        class="bg-video"
         muted
         playsinline
         preload="auto"
-      ></video>
-      <video
-        ref="videoB"
-        class="bg-video layer-b"
-        muted
-        playsinline
-        preload="auto"
+        loop
       ></video>
       <div class="video-placeholder"></div>
       <div class="video-overlay-tint"></div>

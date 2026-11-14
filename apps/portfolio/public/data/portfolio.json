@@ -41,7 +41,7 @@
       }
     ],
     "createdAt": "2026-11-02T12:00:00.000Z",
-    "updatedAt": "2026-11-10T22:45:00.000Z",
+    "updatedAt": "2026-11-14T18:25:00.000Z",
     "linkedin": "https://www.linkedin.com/in/dcastilloguindos"
   },
   "experiences": [
@@ -73,8 +73,8 @@
       ],
       "location": "Madrid",
       "companyUrl": "https://www.elcorteingles.es",
-      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "backgroundVideoUrl": "/videos/video-1.mp4",
+      "videoUrl": "/videos/video-1.mp4",
       "order": 1,
       "isExtra": false
     },
@@ -106,8 +106,8 @@
       ],
       "location": "Madrid",
       "companyUrl": "https://epamneoris.com/",
-      "backgroundVideoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
-      "videoUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+      "backgroundVideoUrl": "/videos/video-2.mp4",
+      "videoUrl": "/videos/video-2.mp4",
       "order": 2,
       "isExtra": false
     },
@@ -137,8 +137,8 @@
       ],
       "location": "Madrid",
       "companyUrl": "https://www.i-sec.com/es",
-      "backgroundVideoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4",
-      "videoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4",
+      "backgroundVideoUrl": "/videos/video-3.mp4",
+      "videoUrl": "/videos/video-3.mp4",
       "order": 3,
       "isExtra": false
     },
@@ -168,8 +168,8 @@
       ],
       "location": "Madrid",
       "companyUrl": "https://exceltic.com/",
-      "backgroundVideoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-hereweare.mp4",
-      "videoUrl": "https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-hereweare.mp4",
+      "backgroundVideoUrl": "/videos/video-4.mp4",
+      "videoUrl": "/videos/video-4.mp4",
       "order": 4,
       "isExtra": false
     }
@@ -234,6 +234,42 @@
       "repoUrl": "https://github.com/dannycastle",
       "featured": true,
       "createdAt": "2026-07-15T00:00:00.000Z"
+    },
+    {
+      "id": "proj-llenoporfa",
+      "profileId": "default",
+      "title": "llenoPorfa · Gasolineras Baratas",
+      "name": "llenoPorfa · Gasolineras Baratas",
+      "type": "web",
+      "summary": "Aplicación web y PWA para localizar estaciones de servicio y comparar los precios de carburantes en tiempo real con datos oficiales del MITECO.",
+      "description": "Aplicación web y PWA para consultar y comparar precios de gasolina, diésel y GLP en España en tiempo real usando datos oficiales de MITECO cerca de tu ubicación con mapa interactivo.",
+      "features": [
+        "Geolocalización en tiempo real y mapa interactivo con OpenStreetMap para encontrar gasolineras cercanas",
+        "Comparativa de precios de gasolina, diésel y GLP con datos oficiales de MITECO actualizados al instante",
+        "PWA instalable y cálculo de ahorro directo para optimizar el coste de cada repostaje"
+      ],
+      "stack": [
+        "Astro",
+        "TypeScript",
+        "Tailwind CSS",
+        "OpenStreetMap",
+        "PWA",
+        "Vercel"
+      ],
+      "tags": [
+        "Astro",
+        "Geolocation",
+        "PWA",
+        "MITECO API",
+        "Vercel"
+      ],
+      "previewImageUrl": "https://images.unsplash.com/photo-1545459720-aac8509eb02c?auto=format&fit=crop&w=1200&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1545459720-aac8509eb02c?auto=format&fit=crop&w=1200&q=80",
+      "liveUrl": "https://lleno-porfa.vercel.app/",
+      "url": "https://lleno-porfa.vercel.app/",
+      "repoUrl": "https://github.com/dannycastle",
+      "featured": true,
+      "createdAt": "2026-11-14T00:00:00.000Z"
     },
     {
       "id": "proj-opengym",
