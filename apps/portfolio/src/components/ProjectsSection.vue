@@ -161,8 +161,13 @@ function setupHorizontalMotion(): void {
     // Mobile / Tablet layout (width < 992px)
     mm.add('(max-width: 991px)', () => {
       const getMobileScrollDistance = () => {
-        return Math.max(0, track.scrollWidth - window.innerWidth + 48);
+        const scrollWidth = track.scrollWidth;
+        const viewportWidth = viewport.clientWidth || window.innerWidth;
+        return Math.max(0, scrollWidth - viewportWidth + 32);
       };
+
+      const dist = getMobileScrollDistance();
+      if (dist <= 0) return;
 
       gsap.to(track, {
         x: () => -getMobileScrollDistance(),
@@ -171,7 +176,7 @@ function setupHorizontalMotion(): void {
           trigger: section,
           pin: true,
           start: 'top top',
-          end: () => `+=${getMobileScrollDistance()}`,
+          end: () => `+=${getMobileScrollDistance() * 1.15}`,
           scrub: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -1302,31 +1307,111 @@ onUnmounted(() => {
 
 /* RESPONSIVE LAYOUTS */
 @media (max-width: 991px) {
+  .portfolio-section {
+    overflow: hidden;
+  }
+
+  .pin-viewport {
+    min-height: 100dvh;
+    height: 100dvh;
+    padding: 20px 0;
+    justify-content: space-evenly;
+    overflow: hidden;
+  }
+
+  .section-top-bar {
+    padding: 0 16px 10px;
+    gap: 10px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
   .showcase-split-layout {
     grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 0 20px;
+    gap: 16px;
+    padding: 0 16px;
+    max-width: 100%;
   }
 
   .narrative-side {
     width: 100%;
+    gap: 6px;
+  }
+
+  .meta-indicator {
+    margin-bottom: 6px;
+  }
+
+  .narrative-title {
+    font-size: 1.35rem;
+    margin: 0 0 4px;
+    line-height: 1.2;
+  }
+
+  .narrative-summary {
+    font-size: 0.88rem;
+    margin: 0 0 10px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Verbose bullet features are accessible in the expanded case study modal */
+  .narrative-features {
+    display: none;
+  }
+
+  .narrative-stack {
+    margin-bottom: 12px;
+  }
+
+  .stack-pill {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+  }
+
+  .narrative-actions {
+    gap: 8px;
+  }
+
+  .cta-primary-btn,
+  .cta-secondary-btn {
+    padding: 8px 14px;
+    font-size: 0.82rem;
   }
 
   .carousel-viewport {
-    overflow: visible;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    padding: 4px 0;
   }
 
   .apps-track {
-    gap: 40px;
-    padding: 10px 20px;
+    gap: 16px;
+    padding: 4px 0;
   }
 
   .app-item-wrapper {
-    width: 420px;
+    width: min(310px, calc(100vw - 44px));
+    flex-shrink: 0;
   }
 
   .app-window-body {
-    height: 240px;
+    height: clamp(155px, 36vw, 195px);
+  }
+
+  .app-window-header {
+    padding: 6px 10px;
+  }
+
+  .app-window-footer {
+    padding: 6px 10px;
+    font-size: 0.72rem;
   }
 }
 

@@ -108,11 +108,11 @@ function initTimeline(): void {
     // 2. Responsive matching via gsap.matchMedia
     mm = gsap.matchMedia();
 
-    mm.add('(min-width: 0px)', () => {
+    // Desktop match: scrubbed parallax timeline with enter, dwell, exit
+    mm.add('(min-width: 821px)', () => {
       const milestones = rootEl.value?.querySelectorAll<HTMLElement>('.experience-milestone') ?? [];
 
       milestones.forEach((milestone, index) => {
-        // Outer wrapper: exclusively animated by ScrollTrigger (y and autoAlpha)
         const scrollNode = milestone.querySelector<HTMLElement>('.exp-scroll-node');
         const node = milestone.querySelector<HTMLElement>('.spine-node');
         const exp = props.experiences[index];
@@ -120,10 +120,8 @@ function initTimeline(): void {
 
         if (!scrollNode) return;
 
-        // Set initial state without CSS transition conflicts
         gsap.set(scrollNode, { y: 60, autoAlpha: 0 });
 
-        // Scroll-scrubbed timeline: enters from bottom, centers, leaves top
         const cardTl = gsap.timeline({
           scrollTrigger: {
             trigger: milestone,
@@ -138,30 +136,25 @@ function initTimeline(): void {
             },
             onUpdate: (self) => {
               if (self.isActive && videoSrc) {
-                // Non-blocking lerped scrub
                 videoScrubber?.setProgress(self.progress);
               }
             },
           },
         });
 
-        // Enter: y: 60 -> y: 0, autoAlpha: 0 -> 1
         cardTl.fromTo(
           scrollNode,
           { y: 60, autoAlpha: 0 },
           { y: 0, autoAlpha: 1, duration: 1, ease: 'power1.out' },
         );
 
-        // Center dwell
         cardTl.to(scrollNode, { y: 0, autoAlpha: 1, duration: 0.8 });
 
-        // Exit: y: 0 -> y: -60, autoAlpha: 1 -> 0
         cardTl.to(
           scrollNode,
           { y: -60, autoAlpha: 0, duration: 1, ease: 'power1.in' },
         );
 
-        // Central Node illumination
         if (node) {
           ScrollTrigger.create({
             trigger: milestone,
@@ -174,6 +167,59 @@ function initTimeline(): void {
               } else {
                 node.classList.remove('is-active');
                 gsap.to(node, { scale: 1, autoAlpha: 0.8, duration: 0.3, overwrite: 'auto' });
+              }
+            },
+          });
+        }
+      });
+    });
+
+    // Mobile match: stable reveal animation that enters smoothly and STAYS visible
+    mm.add('(max-width: 820px)', () => {
+      const milestones = rootEl.value?.querySelectorAll<HTMLElement>('.experience-milestone') ?? [];
+
+      milestones.forEach((milestone, index) => {
+        const scrollNode = milestone.querySelector<HTMLElement>('.exp-scroll-node');
+        const node = milestone.querySelector<HTMLElement>('.spine-node');
+        const exp = props.experiences[index];
+        const videoSrc = exp?.backgroundVideoUrl || exp?.videoUrl;
+
+        if (!scrollNode) return;
+
+        gsap.fromTo(
+          scrollNode,
+          { y: 30, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.55,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: milestone,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              onEnter: () => {
+                videoScrubber?.switchVideo(videoSrc);
+              },
+              onEnterBack: () => {
+                videoScrubber?.switchVideo(videoSrc);
+              },
+            },
+          },
+        );
+
+        if (node) {
+          ScrollTrigger.create({
+            trigger: milestone,
+            start: 'top 75%',
+            end: 'bottom 20%',
+            onToggle: (self) => {
+              if (self.isActive) {
+                node.classList.add('is-active');
+                gsap.to(node, { scale: 1.25, autoAlpha: 1, duration: 0.25, overwrite: 'auto' });
+              } else {
+                node.classList.remove('is-active');
+                gsap.to(node, { scale: 1, autoAlpha: 0.8, duration: 0.25, overwrite: 'auto' });
               }
             },
           });
@@ -671,24 +717,32 @@ onUnmounted(() => {
 
 /* Responsive Mobile Layout */
 @media (max-width: 820px) {
+  .experience-section {
+    padding: 70px 0 80px;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
   .container {
     padding: 0 16px;
   }
 
   .timeline-spine-track {
-    left: 20px;
+    left: 16px;
     transform: none;
   }
 
   .spine-node {
-    left: 20px;
+    left: 16px;
   }
 
   .experience-milestone {
     min-height: auto;
-    margin-bottom: 50px;
+    margin-bottom: 32px;
     justify-content: flex-start !important;
-    padding-left: 52px;
+    padding-left: 42px;
   }
 
   .exp-scroll-node {
@@ -697,7 +751,7 @@ onUnmounted(() => {
   }
 
   .exp-tilt-card {
-    padding: 24px 20px;
+    padding: 22px 18px;
   }
 }
 </style>

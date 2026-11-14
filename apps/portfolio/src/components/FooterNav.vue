@@ -639,6 +639,11 @@ function scrollToTop(e: Event): void {
 }
 
 @media (max-width: 640px) {
+  .site-footer {
+    margin-top: 80px;
+    padding: 50px 0 30px;
+  }
+
   .footer-top-bar {
     flex-direction: column;
     align-items: flex-start;
@@ -662,9 +667,21 @@ function scrollToTop(e: Event): void {
     grid-column: span 1;
   }
 
+  .tardis-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    padding: 20px 16px;
+  }
+
+  .tardis-cta {
+    justify-content: center;
+  }
+
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
   }
 }
 </style>

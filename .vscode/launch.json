@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dev: All (Monorepo)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev"
+    },
+    {
+      "name": "Dev: Portfolio (Astro)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/portfolio",
+      "command": "pnpm dev"
+    },
+    {
+      "name": "Dev: Manager (Vite)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/manager",
+      "command": "pnpm dev"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Dev: Both (Portfolio + Manager)",
+      "configurations": [
+        "Dev: Portfolio (Astro)",
+        "Dev: Manager (Vite)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

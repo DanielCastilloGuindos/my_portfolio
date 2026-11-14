@@ -498,9 +498,26 @@ async function submit(event: Event): Promise<void> {
 }
 
 @media (max-width: 768px) {
+  .contact {
+    padding: 70px 16px 80px;
+  }
+
+  .section-title {
+    margin: 0 0 36px;
+  }
+
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: 48px;
+    gap: 32px;
+  }
+
+  .contact-card {
+    padding: 24px 18px;
+  }
+
+  .info-value {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 
