@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 import gsap from 'gsap';
 import type { Profile, Experience, Education, Project, ContactInfo, SocialLink, NavLink, WorkExperience, PortfolioProject } from '@portfolio/core';
 import { getTheme, type Theme } from '../themes/index';
@@ -35,6 +35,8 @@ const error = ref<string | null>(null);
 
 let syncChannel: BroadcastChannel | null = null;
 let smoothScrollCleanup: (() => void) | null = null;
+let entranceContext: gsap.Context | null = null;
+let motionMediaQuery: MediaQueryList | null = null;
 const STATIC_PATH = '/data/portfolio.json';
 
 function applyPortfolioData(data: Record<string, any>): void {
@@ -149,14 +151,26 @@ function animateEntrance(): void {
   const sections = document.querySelectorAll<HTMLElement>('.portfolio-section');
   if (!sections.length) return;
 
-  gsap.from(sections, {
-    y: 30,
-    opacity: 0,
-    duration: 0.7,
-    stagger: 0.2,
-    ease: 'power3.out',
-    delay: 0.2,
+  entranceContext?.revert();
+  entranceContext = gsap.context(() => {
+    gsap.from(sections, {
+      y: 30,
+      opacity: 0,
+      duration: 0.7,
+      stagger: 0.2,
+      ease: 'power3.out',
+      delay: 0.2,
+    });
   });
+}
+
+function syncMotionPreference(): void {
+  if (prefersReducedMotion()) {
+    entranceContext?.revert();
+    entranceContext = null;
+  }
+  smoothScrollCleanup?.();
+  smoothScrollCleanup = initSmoothScroll().cleanup;
 }
 
 function handleStorageUpdate(event: StorageEvent): void {
@@ -173,11 +187,15 @@ function handleStorageUpdate(event: StorageEvent): void {
 }
 
 onMounted(() => {
-  const { cleanup } = initSmoothScroll();
-  smoothScrollCleanup = cleanup;
+  smoothScrollCleanup = initSmoothScroll().cleanup;
+  motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  motionMediaQuery.addEventListener('change', syncMotionPreference);
 
-  loadPortfolio();
-  animateEntrance();
+  loadPortfolio().then(async () => {
+    // Child sections render only after the data-driven branch is mounted.
+    await nextTick();
+    animateEntrance();
+  });
 
   // Listen to cross-tab updates from apps/manager
   window.addEventListener('storage', handleStorageUpdate);
@@ -197,6 +215,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  motionMediaQuery?.removeEventListener('change', syncMotionPreference);
+  motionMediaQuery = null;
+  entranceContext?.revert();
+  entranceContext = null;
   if (smoothScrollCleanup) {
     smoothScrollCleanup();
     smoothScrollCleanup = null;

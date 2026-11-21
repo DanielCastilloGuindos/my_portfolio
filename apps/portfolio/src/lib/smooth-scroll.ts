@@ -15,7 +15,14 @@ let tickerCallback: ((time: number) => void) | null = null;
  */
 export function initSmoothScroll(): { lenis: Lenis | null; cleanup: () => void } {
   // If user prefers reduced motion, do not initialize smooth inertia
-  if (prefersReducedMotion() || typeof window === 'undefined') {
+  // Coarse pointers and touch devices should retain the browser's native scroll
+  // physics. Lenis is reserved for desktop-style wheel/pointer interaction.
+  if (
+    prefersReducedMotion() ||
+    typeof window === 'undefined' ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    'ontouchstart' in window
+  ) {
     return {
       lenis: null,
       cleanup: () => {},

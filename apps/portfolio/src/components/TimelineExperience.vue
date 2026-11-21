@@ -24,6 +24,12 @@ let ctx: gsap.Context | null = null;
 let mm: gsap.MatchMedia | null = null;
 let videoScrubber: VideoScrubController | null = null;
 let tiltCleanups: Array<() => void> = [];
+let motionMediaQuery: MediaQueryList | null = null;
+
+function shouldPreloadVideos(): 'auto' | 'metadata' {
+  if (typeof window === 'undefined' || prefersReducedMotion()) return 'metadata';
+  return window.matchMedia('(min-width: 821px) and (pointer: fine)').matches ? 'auto' : 'metadata';
+}
 
 /**
  * Initializes 3D Tilt Parallax on .exp-tilt-card wrappers using gsap.quickTo
@@ -78,12 +84,18 @@ function initTimeline(): void {
 
   const videoElements = rootEl.value.querySelectorAll<HTMLVideoElement>('.bg-video');
 
-  // Initialize lerp-based video scrubber with pre-bound video elements
-  videoScrubber = new VideoScrubController({
-    lerpFactor: 0.16,
-    crossfadeDuration: 0.65,
-  });
-  videoScrubber.bindVideos(Array.from(videoElements));
+  // Keep the expensive multi-buffer scrubber for desktop pointer devices.
+  // Mobile and reduced-motion use the stable gradient placeholder instead.
+  const canScrubVideo =
+    !prefersReducedMotion() &&
+    window.matchMedia('(min-width: 821px) and (pointer: fine)').matches;
+  if (canScrubVideo) {
+    videoScrubber = new VideoScrubController({
+      lerpFactor: 0.16,
+      crossfadeDuration: 0.65,
+    });
+    videoScrubber.bindVideos(Array.from(videoElements));
+  }
 
   ctx = gsap.context(() => {
     // 1. Overall timeline vertical spine progress drawing (scaleY from top center)
@@ -238,8 +250,33 @@ function initTimeline(): void {
   }, rootEl.value);
 }
 
+function cleanupTimeline(): void {
+  tiltCleanups.forEach((cleanup) => cleanup());
+  tiltCleanups = [];
+  mm?.revert();
+  mm = null;
+  ctx?.revert();
+  ctx = null;
+  videoScrubber?.destroy();
+  videoScrubber = null;
+}
+
+function handleMotionPreferenceChange(): void {
+  cleanupTimeline();
+  nextTick(() => {
+    if (prefersReducedMotion()) {
+      const scrollNodes = rootEl.value?.querySelectorAll<HTMLElement>('.exp-scroll-node') ?? [];
+      scrollNodes.forEach((node) => gsap.set(node, { y: 0, autoAlpha: 1 }));
+      return;
+    }
+    initTimeline();
+  });
+}
+
 onMounted(() => {
   nextTick(() => {
+    motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionMediaQuery.addEventListener('change', handleMotionPreferenceChange);
     if (prefersReducedMotion()) {
       const scrollNodes = rootEl.value?.querySelectorAll<HTMLElement>('.exp-scroll-node') ?? [];
       scrollNodes.forEach((node) => {
@@ -252,21 +289,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  tiltCleanups.forEach((cleanup) => cleanup());
-  tiltCleanups = [];
-
-  if (mm) {
-    mm.revert();
-    mm = null;
-  }
-  if (ctx) {
-    ctx.revert();
-    ctx = null;
-  }
-  if (videoScrubber) {
-    videoScrubber.destroy();
-    videoScrubber = null;
-  }
+  motionMediaQuery?.removeEventListener('change', handleMotionPreferenceChange);
+  motionMediaQuery = null;
+  cleanupTimeline();
 });
 </script>
 
@@ -287,7 +312,7 @@ onUnmounted(() => {
         class="bg-video"
         muted
         playsinline
-        preload="auto"
+        :preload="shouldPreloadVideos()"
         loop
       ></video>
       <div class="video-placeholder"></div>
@@ -459,6 +484,17 @@ onUnmounted(() => {
   background: rgba(26, 26, 34, 0.76);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+}
+
+@media (max-width: 820px), (pointer: coarse) {
+  .bg-video {
+    will-change: auto;
+  }
+
+  .video-overlay-tint {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 /* Timeline Layout */

@@ -38,6 +38,8 @@ let ctx: gsap.Context | null = null;
 let mm: gsap.MatchMedia | null = null;
 let skewQuickToSetters: Array<(value: number) => void> = [];
 let magneticCleanups: Array<() => void> = [];
+let carouselScrollFrame = 0;
+let motionMediaQuery: MediaQueryList | null = null;
 
 const filteredProjects = computed<ProjectItem[]>(() => {
   if (activeFilter.value === 'all') return props.projects;
@@ -88,9 +90,13 @@ function setupHorizontalMotion(): void {
     ctx.revert();
     ctx = null;
   }
+  if (mm) {
+    mm.revert();
+    mm = null;
+  }
   skewQuickToSetters = [];
 
-  if (prefersReducedMotion() || !pinContainerEl.value || !trackEl.value || !carouselViewportEl.value) {
+  if (!pinContainerEl.value || !trackEl.value || !carouselViewportEl.value) {
     return;
   }
 
@@ -103,6 +109,7 @@ function setupHorizontalMotion(): void {
 
     // Desktop split layout (width >= 992px): Left text fixed, Right carousel strictly clipped in viewport
     mm.add('(min-width: 992px)', () => {
+      if (prefersReducedMotion()) return;
       const getScrollDistance = () => {
         const scrollWidth = track.scrollWidth;
         const viewportWidth = viewport.clientWidth;
@@ -158,43 +165,39 @@ function setupHorizontalMotion(): void {
       });
     });
 
-    // Mobile / Tablet layout (width < 992px)
+    // Mobile / Tablet keeps native horizontal scrolling. The CSS track is
+    // scroll-snapped and its lightweight scroll observer updates the narrative.
     mm.add('(max-width: 991px)', () => {
-      const getMobileScrollDistance = () => {
-        const scrollWidth = track.scrollWidth;
-        const viewportWidth = viewport.clientWidth || window.innerWidth;
-        return Math.max(0, scrollWidth - viewportWidth + 32);
-      };
-
-      const dist = getMobileScrollDistance();
-      if (dist <= 0) return;
-
-      gsap.to(track, {
-        x: () => -getMobileScrollDistance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          start: 'top top',
-          end: () => `+=${getMobileScrollDistance() * 1.15}`,
-          scrub: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const total = filteredProjects.value.length;
-            if (total > 1) {
-              const computedIndex = Math.min(
-                total - 1,
-                Math.max(0, Math.floor(self.progress * total + 0.15)),
-              );
-              updateActiveProject(computedIndex);
-            }
-          },
-        },
-      });
+      gsap.set(track, { x: 0 });
+      viewport.addEventListener('scroll', handleCarouselScroll, { passive: true });
+      return () => viewport.removeEventListener('scroll', handleCarouselScroll);
     });
   }, rootEl.value);
 
   setupMagneticButtons();
+}
+
+function handleCarouselScroll(): void {
+  if (carouselScrollFrame) return;
+  carouselScrollFrame = window.requestAnimationFrame(() => {
+    carouselScrollFrame = 0;
+    const viewport = carouselViewportEl.value;
+    const track = trackEl.value;
+    if (!viewport || !track) return;
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('.app-item-wrapper'));
+    const center = viewport.scrollLeft + viewport.clientWidth / 2;
+    let nearestIndex = activeIndex.value;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    cards.forEach((card, index) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - center);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = index;
+      }
+    });
+    updateActiveProject(nearestIndex);
+  });
 }
 
 async function setFilter(filter: FilterType): Promise<void> {
@@ -300,11 +303,19 @@ watch(
 onMounted(() => {
   nextTick(() => {
     setupHorizontalMotion();
+    motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motionMediaQuery.addEventListener('change', setupHorizontalMotion);
     window.addEventListener('keydown', handleKeydown);
   });
 });
 
 onUnmounted(() => {
+  motionMediaQuery?.removeEventListener('change', setupHorizontalMotion);
+  motionMediaQuery = null;
+  if (carouselScrollFrame) window.cancelAnimationFrame(carouselScrollFrame);
+  if (carouselViewportEl.value) {
+    carouselViewportEl.value.removeEventListener('scroll', handleCarouselScroll);
+  }
   window.removeEventListener('keydown', handleKeydown);
   magneticCleanups.forEach((cleanup) => cleanup());
   magneticCleanups = [];
@@ -498,6 +509,8 @@ onUnmounted(() => {
                     :alt="`Interfaz de la aplicación ${project.title || project.name}`"
                     class="app-preview-img"
                     loading="lazy"
+                    width="580"
+                    height="330"
                   />
 
                   <div class="app-expand-overlay font-mono">
@@ -540,6 +553,8 @@ onUnmounted(() => {
               :src="selectedProject.previewImageUrl || selectedProject.imageUrl"
               :alt="`Captura completa de ${selectedProject.title || selectedProject.name}`"
               class="modal-screen-img"
+              width="580"
+              height="420"
             />
           </div>
 
@@ -1060,6 +1075,7 @@ onUnmounted(() => {
   height: 330px;
   background: #0d0c10;
   overflow: hidden;
+  aspect-ratio: 580 / 330;
 }
 
 .app-preview-img {
@@ -1172,6 +1188,7 @@ onUnmounted(() => {
   min-height: 420px;
   background: #0d0c10;
   overflow: hidden;
+  aspect-ratio: 580 / 420;
 }
 
 .modal-screen-img {
@@ -1308,15 +1325,15 @@ onUnmounted(() => {
 /* RESPONSIVE LAYOUTS */
 @media (max-width: 991px) {
   .portfolio-section {
-    overflow: hidden;
+    overflow: clip;
   }
 
   .pin-viewport {
-    min-height: 100dvh;
-    height: 100dvh;
+    min-height: auto;
+    height: auto;
     padding: 20px 0;
-    justify-content: space-evenly;
-    overflow: hidden;
+    justify-content: flex-start;
+    overflow: visible;
   }
 
   .section-top-bar {
@@ -1385,7 +1402,11 @@ onUnmounted(() => {
   }
 
   .carousel-viewport {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
     max-width: 100%;
     padding: 4px 0;
@@ -1394,15 +1415,27 @@ onUnmounted(() => {
   .apps-track {
     gap: 16px;
     padding: 4px 0;
+    transform: none !important;
   }
 
   .app-item-wrapper {
     width: min(310px, calc(100vw - 44px));
     flex-shrink: 0;
+    scroll-snap-align: center;
   }
 
   .app-window-body {
     height: clamp(155px, 36vw, 195px);
+  }
+
+  .app-window {
+    will-change: auto;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  }
+
+  .app-expand-overlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .app-window-header {
@@ -1427,6 +1460,13 @@ onUnmounted(() => {
 
   .modal-details-pane {
     padding: 24px 20px;
+  }
+}
+
+@media (max-width: 991px) and (prefers-reduced-motion: reduce) {
+  .app-item-wrapper,
+  .app-window {
+    transition: none;
   }
 }
 </style>

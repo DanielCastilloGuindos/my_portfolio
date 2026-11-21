@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 
 interface LinkItem {
   id?: string;
@@ -38,9 +38,18 @@ const primaryLinks = computed<LinkItem[]>(() => {
 
 const isMenuOpen = ref(false);
 const isVisible = ref(false);
+const drawerRef = ref<HTMLElement | null>(null);
+const menuButtonRef = ref<HTMLButtonElement | null>(null);
+let scrollFrame = 0;
 
-function toggleMenu(): void {
+async function toggleMenu(): Promise<void> {
   isMenuOpen.value = !isMenuOpen.value;
+  if (isMenuOpen.value) {
+    await nextTick();
+    drawerRef.value?.querySelector<HTMLElement>('a, button')?.focus();
+  } else {
+    menuButtonRef.value?.focus();
+  }
 }
 
 function closeMenu(): void {
@@ -48,6 +57,14 @@ function closeMenu(): void {
 }
 
 function handleScroll(): void {
+  if (scrollFrame) return;
+  scrollFrame = window.requestAnimationFrame(() => {
+    scrollFrame = 0;
+    updateVisibility();
+  });
+}
+
+function updateVisibility(): void {
   const heroElement = document.getElementById('hero');
   if (heroElement) {
     const rect = heroElement.getBoundingClientRect();
@@ -60,16 +77,18 @@ function handleScroll(): void {
 function onKeydown(e: KeyboardEvent): void {
   if (e.key === 'Escape' && isMenuOpen.value) {
     closeMenu();
+    menuButtonRef.value?.focus();
   }
 }
 
 onMounted(() => {
-  handleScroll();
+  updateVisibility();
   window.addEventListener('scroll', handleScroll, { passive: true });
   window.addEventListener('keydown', onKeydown);
 });
 
 onUnmounted(() => {
+  if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
   window.removeEventListener('scroll', handleScroll);
   window.removeEventListener('keydown', onKeydown);
 });
@@ -90,6 +109,8 @@ onUnmounted(() => {
           :src="logoUrl"
           alt="Logo"
           class="brand-logo"
+          width="40"
+          height="32"
         />
         <span class="brand-title">{{ title || 'Danny Castillo' }}</span>
       </a>
@@ -136,6 +157,7 @@ onUnmounted(() => {
       <!-- Right: Mobile Hamburger Button (2 lines, top 100%, bottom 75%, aligned left) -->
       <button
         type="button"
+        ref="menuButtonRef"
         class="hamburger-btn"
         :class="{ 'is-active': isMenuOpen }"
         :aria-expanded="isMenuOpen"
@@ -150,10 +172,12 @@ onUnmounted(() => {
 
     <!-- Mobile Drawer Menu: Strictly hidden when closed so no part peeks out -->
     <div
+      ref="drawerRef"
       id="mobile-menu"
       class="mobile-drawer"
       :class="{ 'is-open': isMenuOpen }"
       :aria-hidden="!isMenuOpen"
+      :inert="!isMenuOpen"
     >
       <nav class="mobile-nav" aria-label="Navegación móvil">
         <ul class="mobile-links">
