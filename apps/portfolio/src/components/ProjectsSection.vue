@@ -40,6 +40,8 @@ let skewQuickToSetters: Array<(value: number) => void> = [];
 let magneticCleanups: Array<() => void> = [];
 let carouselScrollFrame = 0;
 let motionMediaQuery: MediaQueryList | null = null;
+let layoutObserver: ResizeObserver | null = null;
+const projectsSectionHeightVar = '--projects-section-height';
 
 const filteredProjects = computed<ProjectItem[]>(() => {
   if (activeFilter.value === 'all') return props.projects;
@@ -67,6 +69,31 @@ function setupMagneticButtons(): void {
   });
 }
 
+function clearProjectsSceneLayout(): void {
+  pinContainerEl.value?.classList.remove('is-scroll-pinned');
+  rootEl.value?.style.removeProperty(projectsSectionHeightVar);
+}
+
+function reserveProjectsSceneHeight(distance: number): void {
+  const root = rootEl.value;
+  const stage = pinContainerEl.value;
+  if (!root || !stage) return;
+
+  const wasPinned = stage.classList.contains('is-scroll-pinned');
+  if (wasPinned) stage.classList.remove('is-scroll-pinned');
+  root.style.removeProperty(projectsSectionHeightVar);
+
+  // Measure the natural section (title + showcase) before adding the
+  // vertical distance consumed by the horizontal rail.
+  const naturalHeight = root.scrollHeight;
+  root.style.setProperty(
+    projectsSectionHeightVar,
+    `${naturalHeight + Math.max(0, distance)}px`,
+  );
+
+  if (wasPinned) stage.classList.add('is-scroll-pinned');
+}
+
 /**
  * Updates the active project index and smoothly animates the clean typography on the left
  */
@@ -77,11 +104,14 @@ function updateActiveProject(newIndex: number): void {
   activeIndex.value = newIndex;
 
   if (narrativePanelEl.value && !prefersReducedMotion()) {
-    gsap.fromTo(
-      narrativePanelEl.value.querySelectorAll('.narrative-animate-item'),
-      { y: 10, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.03, ease: 'power2.out', overwrite: 'auto' },
-    );
+    nextTick(() => {
+      if (!narrativePanelEl.value) return;
+      gsap.fromTo(
+        narrativePanelEl.value.querySelectorAll('.narrative-animate-item'),
+        { y: 10, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.32, stagger: 0.03, ease: 'power2.out', overwrite: 'auto' },
+      );
+    });
   }
 }
 
@@ -95,6 +125,7 @@ function setupHorizontalMotion(): void {
     mm = null;
   }
   skewQuickToSetters = [];
+  clearProjectsSceneLayout();
 
   if (!pinContainerEl.value || !trackEl.value || !carouselViewportEl.value) {
     return;
@@ -102,7 +133,6 @@ function setupHorizontalMotion(): void {
 
   const track = trackEl.value;
   const viewport = carouselViewportEl.value;
-  const section = pinContainerEl.value;
 
   ctx = gsap.context(() => {
     mm = gsap.matchMedia();
@@ -131,17 +161,24 @@ function setupHorizontalMotion(): void {
         skewQuickToSetters.push(quickSkew);
       });
 
-      // Pin the section and scrub horizontal travel strictly inside the right viewport
+      // Pin the complete showcase stage while vertical scroll drives the
+      // horizontal project rail. The description remains visible for the
+      // entire journey and changes as each project reaches the active slot.
+      reserveProjectsSceneHeight(dist);
       gsap.to(track, {
         x: () => -getScrollDistance(),
         ease: 'none',
         scrollTrigger: {
-          trigger: section,
-          pin: true,
+          trigger: pinContainerEl.value,
+          anticipatePin: 1,
           start: 'top top',
           end: () => `+=${getScrollDistance()}`,
           scrub: 1,
           invalidateOnRefresh: true,
+          onRefresh: () => reserveProjectsSceneHeight(getScrollDistance()),
+          onToggle: (self) => {
+            pinContainerEl.value?.classList.toggle('is-scroll-pinned', self.isActive);
+          },
           onUpdate: (self) => {
             // Velocity skew between -3.5 and 3.5 deg
             const velocity = self.getVelocity();
@@ -168,6 +205,7 @@ function setupHorizontalMotion(): void {
     // Mobile / Tablet keeps native horizontal scrolling. The CSS track is
     // scroll-snapped and its lightweight scroll observer updates the narrative.
     mm.add('(max-width: 991px)', () => {
+      clearProjectsSceneLayout();
       gsap.set(track, { x: 0 });
       viewport.addEventListener('scroll', handleCarouselScroll, { passive: true });
       return () => viewport.removeEventListener('scroll', handleCarouselScroll);
@@ -198,6 +236,10 @@ function handleCarouselScroll(): void {
     });
     updateActiveProject(nearestIndex);
   });
+}
+
+function refreshScrollTrigger(): void {
+  ScrollTrigger.refresh();
 }
 
 async function setFilter(filter: FilterType): Promise<void> {
@@ -303,13 +345,22 @@ watch(
 onMounted(() => {
   nextTick(() => {
     setupHorizontalMotion();
+    if (typeof ResizeObserver !== 'undefined' && carouselViewportEl.value) {
+      layoutObserver = new ResizeObserver(() => ScrollTrigger.refresh());
+      layoutObserver.observe(carouselViewportEl.value);
+    }
     motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     motionMediaQuery.addEventListener('change', setupHorizontalMotion);
     window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('load', refreshScrollTrigger);
+    requestAnimationFrame(() => ScrollTrigger.refresh());
   });
 });
 
 onUnmounted(() => {
+  clearProjectsSceneLayout();
+  layoutObserver?.disconnect();
+  layoutObserver = null;
   motionMediaQuery?.removeEventListener('change', setupHorizontalMotion);
   motionMediaQuery = null;
   if (carouselScrollFrame) window.cancelAnimationFrame(carouselScrollFrame);
@@ -317,6 +368,7 @@ onUnmounted(() => {
     carouselViewportEl.value.removeEventListener('scroll', handleCarouselScroll);
   }
   window.removeEventListener('keydown', handleKeydown);
+  window.removeEventListener('load', refreshScrollTrigger);
   magneticCleanups.forEach((cleanup) => cleanup());
   magneticCleanups = [];
 
@@ -340,9 +392,8 @@ onUnmounted(() => {
     aria-labelledby="portfolio-heading"
   >
     <div id="portfolio" style="position: absolute; top: 0;" aria-hidden="true"></div>
-    <div ref="pinContainerEl" class="pin-viewport">
-      <!-- Section Top Bar: Title & Status -->
-      <header class="section-top-bar">
+    <!-- Section Top Bar: Title & Status -->
+    <header class="section-top-bar">
         <div class="top-title-group">
           <span class="section-mono-tag font-mono">// 02. PROYECTOS DESTACADOS</span>
           <h2 id="portfolio-heading" class="section-title">Proyectos</h2>
@@ -388,9 +439,10 @@ onUnmounted(() => {
           <span class="count-pulse"></span>
           {{ counts.all }} APLICACIONES DESPLEGADAS
         </div>
-      </header>
+    </header>
 
-      <!-- Main Layout: Fixed Left Description (NO BOX) + Larger Right Portfolio Carousel (CLIPPED) -->
+    <div ref="pinContainerEl" class="pin-viewport">
+      <!-- Main Layout: Fixed Left Description + Larger Right Portfolio Carousel -->
       <div class="showcase-split-layout">
         <!-- FIXED LEFT NARRATIVE AREA: Pure typography, NO box, changes dynamically with scroll -->
         <aside ref="narrativePanelEl" class="narrative-side" aria-live="polite">
@@ -638,18 +690,44 @@ onUnmounted(() => {
 .portfolio-section {
   position: relative;
   width: 100%;
-  overflow: clip;
+  min-height: var(--projects-section-height, auto);
+  overflow: visible;
+  background:
+    radial-gradient(circle at 74% 48%, rgba(230, 195, 132, 0.08), transparent 34rem),
+    linear-gradient(180deg, transparent 0%, rgba(42, 42, 55, 0.2) 20%, rgba(42, 42, 55, 0.06) 84%, transparent 100%);
 }
 
 .pin-viewport {
-  position: relative;
   width: 100%;
+  position: relative;
+  height: 100vh;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 40px 0;
   box-sizing: border-box;
+  overflow: visible;
+  isolation: isolate;
+  background: linear-gradient(115deg, rgba(31, 31, 40, 0.18), rgba(31, 31, 40, 0.58));
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 18px 0;
+    border-top: 1px solid rgba(220, 215, 186, 0.08);
+    border-bottom: 1px solid rgba(220, 215, 186, 0.08);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.pin-viewport.is-scroll-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
 }
 
 /* Top Bar: Title & Status */
@@ -665,6 +743,9 @@ onUnmounted(() => {
   flex-wrap: wrap;
   z-index: 5;
   box-sizing: border-box;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 30px;
+  padding-bottom: 18px;
 }
 
 .top-title-group {
@@ -684,7 +765,7 @@ onUnmounted(() => {
 
 .section-title {
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
@@ -771,7 +852,7 @@ onUnmounted(() => {
 .showcase-split-layout {
   display: grid;
   grid-template-columns: 360px 1fr; /* Larger right area for portfolios */
-  gap: 48px;
+  gap: clamp(48px, 6vw, 88px);
   align-items: center;
   width: 100%;
   max-width: 1380px;
@@ -783,10 +864,12 @@ onUnmounted(() => {
 /* FIXED LEFT NARRATIVE AREA: Pure typography, NO box, NO border, NO background */
 .narrative-side {
   position: relative;
+  align-self: center;
   background: transparent;
-  border: none;
+  border: 0;
+  border-left: 2px solid var(--color-accent);
   box-shadow: none;
-  padding: 0;
+  padding: 10px 0 20px 24px;
   display: flex;
   flex-direction: column;
   z-index: 5;
@@ -824,7 +907,7 @@ onUnmounted(() => {
 
 .narrative-title {
   font-family: var(--font-display);
-  font-size: 1.7rem;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 12px;
@@ -956,7 +1039,8 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   overflow: hidden; /* Clips cards completely so they cannot cross into the left text */
-  padding: 16px 0;
+  padding: 28px 0;
+  mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
 }
 
 .apps-track {
@@ -988,8 +1072,8 @@ onUnmounted(() => {
   width: 100%;
   background: #181720;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.6);
+  border-radius: 18px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(220, 215, 186, 0.04);
   overflow: hidden;
   cursor: pointer;
   transform-origin: center bottom;
@@ -999,7 +1083,7 @@ onUnmounted(() => {
 
 .app-item-wrapper.is-active-app .app-window {
   border-color: var(--color-border-hover);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 24px rgba(230, 195, 132, 0.15);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 24px rgba(230, 195, 132, 0.15), 0 0 0 1px rgba(230, 195, 132, 0.08);
 }
 
 /* Window Chrome Header */
@@ -1325,20 +1409,32 @@ onUnmounted(() => {
 /* RESPONSIVE LAYOUTS */
 @media (max-width: 991px) {
   .portfolio-section {
+    min-height: auto;
     overflow: clip;
+    background: none;
   }
 
   .pin-viewport {
     min-height: auto;
     height: auto;
+    position: relative;
     padding: 20px 0;
     justify-content: flex-start;
     overflow: visible;
   }
 
+  .pin-viewport.is-scroll-pinned {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+  }
+
   .section-top-bar {
     padding: 0 16px 10px;
     gap: 10px;
+    margin-bottom: 0;
+    border-bottom: 0;
   }
 
   .section-title {
@@ -1353,8 +1449,12 @@ onUnmounted(() => {
   }
 
   .narrative-side {
+    position: relative;
+    align-self: stretch;
     width: 100%;
     gap: 6px;
+    border-left: 0;
+    padding: 0;
   }
 
   .meta-indicator {
@@ -1410,6 +1510,7 @@ onUnmounted(() => {
     width: 100%;
     max-width: 100%;
     padding: 4px 0;
+    mask-image: none;
   }
 
   .apps-track {
